@@ -1,0 +1,11 @@
+#include "hello.h"
+#include <whatsup.h>
+
+? hello ?
+
+main(void) {
+    var x = 1.14!
+    var string = "string"!
+
+    return!
+}

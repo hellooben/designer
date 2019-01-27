@@ -1,0 +1,87 @@
+unary : ID
+      | INTEGER
+      | STRING
+
+op : PLUS | MINUS | TIMES | DIVIDE | EQUALS | GREATERTHAN | LESSTHAN | GREATEREQUALS | LESSEQUALS | DOT | MOD | NOT
+
+expr : unary
+     | unary op expr
+     | unary op funcCall
+     | funcCall op expr
+
+list : item
+     | item list
+
+optList : list
+        | EMPTY
+
+varDef : VAR ID optInit
+
+listDef : VAR ID OBRACKET optList CBRACKET EXCL
+
+optInit : ASSIGN expr
+        | EMPTY
+
+argList : item
+        | item COMMA argList
+
+optArgList : argList
+           | EMPTY
+
+item : expr
+
+statement : expr
+          | varDef
+          | ifStatement
+          | whileLoop
+          | forLoop
+          | funcDef
+          | funcCall
+          | returnStatement
+
+statements : statement EXCL
+           | statement EXCL statements
+           | EMPTY
+
+block : OBRACE statements
+
+returnStatement : RETURN EXCL
+                | RETURN expr EXCL
+
+funcDef : METHOD ID OPAREN optArgList CPAREN block returnStatement CBRACE
+
+funcCall : ID OPAREN optArgList CPAREN
+         | unary op funcCall
+
+ifStatement : IF OPAREN expr CPAREN block CBRACE optElse CBRACE
+
+optElse : ELSE block
+        | ELSE ifStatement
+        | EMPTY
+
+whileLoop : WHILE OPAREN expr CPAREN block CBRACE
+
+forCheck : LESSTHAN
+         | GREATERTHAN
+         | LESSEQUALS
+         | GREATEREQUALS
+
+forOp : PLUS PLUS
+      | MINUS MINUS
+      | EQUALS PLUS unary
+      | EQUALS MINUS unary
+      | EQUALS TIMES unary
+      | EQUALS DIVIDE unary
+
+forLoop : FOR OPAREN unary EQUALS INTEGER SEMI unary forCheck INTEGER SEMI unary forOp CPAREN block CBRACE
+
+include : POUND INCLUDE QUOTE ID QUOTE
+        | POUND INCLUDE LESSTHAN ID GREATERTHAN
+
+includes : include
+         | include includes
+
+main : MAIN OPAREN optArgList CPAREN block returnStatement CBRACE
+
+program : includes main
+        | main
