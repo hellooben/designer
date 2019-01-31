@@ -1,6 +1,6 @@
 /***
 Ben Bailey
-types.c
+lexing.c
 ***/
 
 #include "lexing.h"
