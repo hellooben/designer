@@ -1,5 +1,5 @@
 # CS 403
-## Programming Language Milestone II: Lexical Analysis
+## Designer Programming Language Milestone II: Lexical Analysis
 
 The second installment of our designer programming language is the lexical analysis module. It follows the first module, grammar, in which we laid out specific rules for the structure of our language. <br><br>
 For this module, I have written a scanner that, character by character, reads a file and correctly identifies each individual token. If you want a full list of each token that can be identified, check out `types.c` and `types.h` (there are a lot of tokens).<br><br>
