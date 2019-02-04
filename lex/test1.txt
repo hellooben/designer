@@ -7,5 +7,12 @@ main(void) {
     var x = 1.14!
     var string = "string"!
 
+    x += x!
+    x -= 15!
+    x *= x!
+    x /= x!
+    x = x / 2!
+    x = x * 3!
+
     return!
 }

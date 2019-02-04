@@ -212,10 +212,24 @@ checkDoubleOperator(int cNum, FILE *fp) {
     else if (cNum == '-' && ch == '-') {
         return 1;
     }
+    else if (cNum == '+' && ch == '=') {
+        // printf("helloooooooooo\n");
+        return 2;
+    }
+    else if (cNum == '-' && ch == '=') {
+        return 2;
+    }
     else if (cNum == '&' && ch == '&') {
         return 1;
     }
+    else if (cNum == '*' && ch == '=') {
+        return 1;
+    }
+    else if (cNum == '/' && ch == '=') {
+        return 1;
+    }
     else {
+        // printf("gotta unget\n");
         ungetc(ch, fp);
         return 0;
     }
@@ -225,6 +239,7 @@ extern LEXEME *
 lex(FILE *fp) {
     skipWhiteSpace(fp);
     int ch = fgetc(fp);
+    int dub;
 
     if (feof(fp)) {
         return newLEXEME(ENDOFINPUT);
@@ -257,17 +272,25 @@ lex(FILE *fp) {
             }
             else return newLEXEME(ASSIGN);
         case '+' :
-            if (checkDoubleOperator(ch, fp)) {
-                return newLEXEME(PLUSPLUS);
-            }
-            else return newLEXEME(PLUS);
+            dub = checkDoubleOperator(ch, fp);
+            if (dub == 0) return newLEXEME(PLUS);
+            else if (dub == 1) return newLEXEME(PLUSPLUS);
+            else return newLEXEME(PEQUALS);
         case '-' :
+            dub = checkDoubleOperator(ch, fp);
+            if (dub == 0) return newLEXEME(MINUS);
+            else if (dub == 1) return newLEXEME(MINUSMINUS);
+            else return newLEXEME(MINUESEQUALS);
+        case '/' :
             if (checkDoubleOperator(ch, fp)) {
-                return newLEXEME(MINUSMINUS);
+                return newLEXEME(DIVIDEEQUALS);
             }
-            else return newLEXEME(MINUS);
-        case '/' : return newLEXEME(DIVIDE);
-        case '*' : return newLEXEME(TIMES);
+            else return newLEXEME(DIVIDE);
+        case '*' :
+            if (checkDoubleOperator(ch, fp)) {
+                return newLEXEME(TIMESEQUALS);
+            }
+            else return newLEXEME(TIMES);
         case '.' : return newLEXEME(DOT);
         case ',' : return newLEXEME(COMMA);
         case '&' :
