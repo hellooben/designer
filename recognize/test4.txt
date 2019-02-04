@@ -13,5 +13,8 @@ main() {
         return l!
     }!
 
+
+    var x = [sup, dude]!
+
     return 0!
 }

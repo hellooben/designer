@@ -1,0 +1,13 @@
+#include "gottaHaveIt.h"
+
+main(argc, argc) {
+    var x = 1!
+
+    var array[x]!
+
+    if (array.0 == 1) {
+        print("gang")!
+    }
+
+    return array!
+}

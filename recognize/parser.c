@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
     FILE *fp = fopen(argv[argc-1], "r");
     int res = parse(fp);
 
-    printf("RESULT : %d\n", res);
+    if (res == 0) printf("legal\n");
+    else printf("illegal\n");
     return 0;
 }

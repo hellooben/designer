@@ -35,9 +35,16 @@ test5 :
 	gcc $(OPTS) types.o lexing.o recognize.o parser.o -o recognizer
 	./recognizer test5.txt
 
+test6 :
+	gcc $(OPTS) -c parser.c recognize.c lexing.c types.c
+	gcc $(OPTS) types.o lexing.o recognize.o parser.o -o recognizer
+	./recognizer test6.txt
+
 run :
-	scanner test1.txt
-	scanner test4.txt
+	./recognizer test2.txt
+	./recognizer test4.txt
+	./recognizer test6.txt
+
 
 clean :
 	rm -f $(OBJS)
