@@ -22,6 +22,7 @@ struct lexeme {
     int intVal;
     double realVal;
     char *stringVal;
+    int lineNum;
 };
 
 extern LEXEME *
@@ -32,6 +33,7 @@ newLEXEME(char *type) {
     l->intVal = 0;
     l->realVal = 0.0;
     l->stringVal = "";
+    l->lineNum = LINECOUNT;
     return l;
 }
 
@@ -43,6 +45,7 @@ newLEXEMEInt(char *type, int intVal) {
     l->intVal = intVal;
     l->realVal = 0.0;
     l->stringVal = "";
+    l->lineNum = LINECOUNT;
     return l;
 }
 
@@ -54,6 +57,7 @@ newLEXEMEReal(char *type, double realVal) {
     l->intVal = 0;
     l->realVal = realVal;
     l->stringVal = "";
+    l->lineNum = LINECOUNT;
     return l;
 }
 
@@ -65,6 +69,7 @@ newLEXEMEString(char *type, char *stringVal) {
     l->intVal = 0;
     l->realVal = 0.0;
     l->stringVal = stringVal;
+    l->lineNum = LINECOUNT;
     return l;
 }
 
@@ -334,6 +339,11 @@ getType(LEXEME *l) {
 extern int
 getLEXEMEInt(LEXEME *l) {
     return l->intVal;
+}
+
+extern int
+getLEXEMEline(LEXEME *l) {
+    return l->lineNum;
 }
 
 extern void

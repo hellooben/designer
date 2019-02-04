@@ -20,7 +20,7 @@ int error = 0;
 /** LEXICAL INTERFACE FUNCTIONS **/
 extern int
 check(char *type) {
-    printf("Checking if CURRENT( %s ) equals PASSED( %s )\n", getType(currentLexeme), type);
+    // printf("Checking if CURRENT( %s ) equals PASSED( %s )\n", getType(currentLexeme), type);
     if (getType(currentLexeme) == type) {
         return 1;
     }
@@ -30,7 +30,7 @@ check(char *type) {
 extern void
 advance() {
     currentLexeme = lex(fp);
-    printf("CURRENT LEXEME : %s\n", getType(currentLexeme));
+    // printf("CURRENT LEXEME : %s\n", getType(currentLexeme));
 }
 
 extern void
@@ -41,14 +41,16 @@ match(char *type) {
 
 extern void
 matchNoAdvance(char *type) {
-    printf("Trying to match CURRENT( %s ) and PASSED( %s )\n", getType(currentLexeme), type);
+    // printf("Trying to match CURRENT( %s ) and PASSED( %s )\n", getType(currentLexeme), type);
     if (check(type) == 0) {
-        printf("!!!!!!!!!!!!------- FOUND A SYNTAX ERROR -------!!!!!!!!!!!!\n\n\n\n");
+        // printf("!!!!!!!!!!!!------- FOUND A SYNTAX ERROR -------!!!!!!!!!!!!\n\n\n\n");
+        printf("FATAL: Syntax error before or on line %d\nillegal\n", getLEXEMEline(currentLexeme));
         error = 1;
+        exit(0);
     }
-    else {
-        printf("MATCHED %s\n", getType(currentLexeme));
-    }
+    // else {
+    //     // printf("MATCHED %s\n", getType(currentLexeme));
+    // }
 }
 
 /** GRAMMAR RULES **/
@@ -224,8 +226,11 @@ varDef() {
         expression();
     }
     else {
-        printf("---- looks like variable definition. can't understand ----\n");
+        // printf("---- looks like variable definition. can't understand ----\n");
+
+        printf("FATAL: Syntax error before or on line %d\nillegal\n", getLEXEMEline(currentLexeme));
         error = 1;
+        exit(0);
     }
 }
 
@@ -437,6 +442,6 @@ parse(FILE *file) {
     fp = file;
     advance();
     int p =  program();
-    printf("RETURNING FROM PARSE\n\n\n");
+    // printf("RETURNING FROM PARSE\n\n\n");
     return p;
 }
