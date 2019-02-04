@@ -117,6 +117,9 @@ statement() {
     else if (check(WHILE)) {
         whileLoop();
     }
+    else if (check(FOR)) {
+        forLoop();
+    }
 }
 
 extern void
@@ -198,6 +201,36 @@ whileLoop() {
     match(CBRACE);
 }
 
+extern void
+forLoop() {
+    match(FOR);
+    match(OPAREN);
+    unary();
+    match(EQUALS);
+    match(INTEGER);
+    match(SEMI);
+    unary();
+    forCheck();
+    match(INTEGER);
+    match(SEMI);
+    unary();
+    forOp();
+}
+
+extern void
+forCheck() {
+    if (check(LESSTHAN)) match(LESSTHAN);
+    else if (check(GREATERTHAN)) match(GREATERTHAN);
+    else if (check(LESSEQUALS)) match(LESSEQUALS);
+    else match(GREATEREQUALS);
+}
+
+extern void
+forOp() {
+    if (check(PLUSPLUS)) match(PLUSPLUS);
+    else if (check(MINUSMINUS)) match(MINUSMINUS);
+    // else if (check(equals)) WORKING HERE!!!!!!
+}
 
 /** PENDING FUNCTIONS **/
 extern int

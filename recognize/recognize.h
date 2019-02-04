@@ -30,6 +30,8 @@ extern void unary();
 extern void varDef();
 extern void ifStatement();
 extern void optElse();
+extern void whileLoop();
+extern void forLoop();
 
 
 

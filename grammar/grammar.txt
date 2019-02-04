@@ -67,10 +67,10 @@ forCheck : LESSTHAN
 
 forOp : PLUS PLUS
       | MINUS MINUS
-      | EQUALS PLUS unary
-      | EQUALS MINUS unary
-      | EQUALS TIMES unary
-      | EQUALS DIVIDE unary
+      | PLUS EQUALS unary
+      | MINUES EQUALS unary
+      | TIMES EQUALS unary
+      | DIVIDE EQUALS unary
 
 forLoop : FOR OPAREN unary EQUALS INTEGER SEMI unary forCheck INTEGER SEMI unary forOp CPAREN block CBRACE
 
