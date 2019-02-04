@@ -38,6 +38,7 @@ char *DOT = "DOT";
 char *COMMA = "COMMA";
 char *MOD = "MOD";
 char *ANDAND = "AND";
+char *OROR = "OR";
 char *EQUALSEQUALS = "EQUALS";
 char *PLUSPLUS = "PLUS PLUS";
 char *MINUSMINUS = "MINUS MINUS";

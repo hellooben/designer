@@ -222,6 +222,9 @@ checkDoubleOperator(int cNum, FILE *fp) {
     else if (cNum == '&' && ch == '&') {
         return 1;
     }
+    else if (cNum == '|' && ch == '|') {
+        return 1;
+    }
     else if (cNum == '*' && ch == '=') {
         return 1;
     }
@@ -298,6 +301,11 @@ lex(FILE *fp) {
                 return newLEXEME(ANDAND);
             }
             else return newLEXEME(MOD);
+        case '|':
+            if (checkDoubleOperator(ch, fp)) {
+                return newLEXEME(OROR);
+            }
+            else return newLEXEME(DIVIDE);
         case '?' : return newLEXEME(QUESTION);
 
         default :

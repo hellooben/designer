@@ -38,6 +38,7 @@ extern char *DOT;
 extern char *COMMA;
 extern char *MOD;
 extern char *ANDAND;
+extern char *OROR;
 extern char *EQUALSEQUALS;
 extern char *PLUSPLUS;
 extern char *MINUSMINUS;

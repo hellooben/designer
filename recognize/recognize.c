@@ -97,9 +97,9 @@ mainMethod() {
     }
     match(CPAREN);
     block();
-    if (returnPending()) {
-        returnStatement();
-    }
+    // if (returnPending()) {
+    //     returnStatement();
+    // }
     match(CBRACE);
 }
 
@@ -149,6 +149,9 @@ statement() {
     else if (check(METHOD)) {
         funcDef();
     }
+    else if (returnPending()) {
+        returnStatement();
+    }
     else if (expressionPending()) {
         expression();
     }
@@ -186,6 +189,15 @@ operator() {
     else if (check(DOT)) match(DOT);
     else if (check(MOD)) match(MOD);
     else if (check(NOT)) match(NOT);
+    else if (check(EQUALSEQUALS)) match(EQUALSEQUALS);
+    else if (check(PLUSPLUS)) match(PLUSPLUS);
+    else if (check(MINUSMINUS)) match(MINUSMINUS);
+    else if (check(PEQUALS)) match(PEQUALS);
+    else if (check(MINUESEQUALS)) match(MINUESEQUALS);
+    else if (check(TIMESEQUALS)) match(TIMESEQUALS);
+    else if (check(DIVIDEEQUALS)) match(DIVIDEEQUALS);
+    else if (check(ANDAND)) match(ANDAND);
+    else if (check(OROR)) match(OROR);
 }
 
 extern void
@@ -331,7 +343,7 @@ returnStatement() {
     else if (unaryPending()) {
         unary();
     }
-    match(EXCL);
+    // match(EXCL);
 }
 
 extern void
@@ -377,7 +389,7 @@ optArgListPending() {
 
 extern int
 statementPending() {
-    return expressionPending() || check(VAR) || check(IF) || check(WHILE) || check(FOR) || check(METHOD);
+    return expressionPending() || check(VAR) || check(IF) || check(WHILE) || check(FOR) || check(METHOD) || check(RETURN);
 }
 
 extern int
@@ -397,7 +409,7 @@ returnPending() {
 
 extern int
 operatorPending() {
-    return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(ASSIGN) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT);
+    return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(ASSIGN) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT) || check(ANDAND) || check(OROR) || check(EQUALSEQUALS) || check(PLUSPLUS) || check(MINUSMINUS) || check(TIMESEQUALS) || check(DIVIDEEQUALS);
 }
 
 extern int
