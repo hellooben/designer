@@ -1,12 +1,13 @@
-unary : ID
-      | INTEGER
+unary : INTEGER
       | STRING
       | REAL
 
 op : PLUS | MINUS | TIMES | DIVIDE | EQUALS | GREATERTHAN | LESSTHAN | GREATEREQUALS | LESSEQUALS | DOT | MOD | NOT
 
 expr : unary
+     | funcCall
      | unary op expr
+     | funcCall op expr
 
 list : item
      | item list

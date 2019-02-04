@@ -1,0 +1,17 @@
+#include "types.h"
+
+main() {
+
+
+    method newLEXEME(type) {
+        LEXEME *l = malloc(sizeof(LEXEME))!
+        assert(l NOT 0)!
+        l.type = type!
+        l.intVal = 0!
+        l.realVal = 0.0!
+        l.stringVal = ""!
+        return l!
+    }!
+
+    return 0!
+}

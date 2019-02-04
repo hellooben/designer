@@ -58,5 +58,5 @@ char *MAIN = "MAIN";
 char *RETURN = "RETURN";
 char *METHOD = "METHOD";
 char *VOID = "VOID";
-char *STRUCT = "STRUCT";
+// char *STRUCT = "STRUCT";
 char *ENDOFINPUT = "ENDOFINPUT";

@@ -15,10 +15,12 @@ recognize.c
 
 LEXEME *currentLexeme;
 FILE *fp;
+int error = 0;
 
 /** LEXICAL INTERFACE FUNCTIONS **/
 extern int
 check(char *type) {
+    printf("Checking if CURRENT( %s ) equals PASSED( %s )\n", getType(currentLexeme), type);
     if (getType(currentLexeme) == type) {
         return 1;
     }
@@ -28,6 +30,7 @@ check(char *type) {
 extern void
 advance() {
     currentLexeme = lex(fp);
+    printf("CURRENT LEXEME : %s\n", getType(currentLexeme));
 }
 
 extern void
@@ -38,19 +41,35 @@ match(char *type) {
 
 extern void
 matchNoAdvance(char *type) {
+    printf("Trying to match CURRENT( %s ) and PASSED( %s )\n", getType(currentLexeme), type);
     if (check(type) == 0) {
-        printf("FOUND A SYNTAX ERROR\n");
+        printf("!!!!!!!!!!!!------- FOUND A SYNTAX ERROR -------!!!!!!!!!!!!\n\n\n\n");
+        error = 1;
+    }
+    else {
+        printf("MATCHED %s\n", getType(currentLexeme));
     }
 }
 
 /** GRAMMAR RULES **/
-extern void
+extern int
 program() {
     if (includesPending()) {
-        include();
-        program();
+        includes();
+        // program();
     }
-    main();
+    mainMethod();
+    match(ENDOFINPUT);
+    // printf("RETURNING FROM PROGRAAAAAAAAAMMMMMMMMMMMMMMMM\n\n\n");
+    return error;
+}
+
+extern void
+includes() {
+    include();
+    if (includesPending()) {
+        includes();
+    }
 }
 
 extern void
@@ -59,8 +78,9 @@ include() {
     match(INCLUDE);
     if (check(LESSTHAN)) {
         match(LESSTHAN);
-        match(IDENTIFIER);
+        match(VARIABLE);
         match(DOT);
+        match(VARIABLE);
         match(GREATERTHAN);
     }
     else if (check(STRING)) {
@@ -69,7 +89,7 @@ include() {
 }
 
 extern void
-main() {
+mainMethod() {
     match(MAIN);
     match(OPAREN);
     if (optArgListPending()) {
@@ -77,12 +97,16 @@ main() {
     }
     match(CPAREN);
     block();
+    if (returnPending()) {
+        returnStatement();
+    }
+    match(CBRACE);
 }
 
 extern void
 argList() {
-    // match(IDENTIFIER);
-    unary();
+    // unary();
+    expression();
     if (check(COMMA)) {
         match(COMMA);
         argList();
@@ -106,10 +130,11 @@ statements() {
 
 extern void
 statement() {
-    if (expressionPending()) {
-        expression();
-    }
-    else if (check(VAR)) {
+    // if (functionCallPending()) {
+    //     printf("going to function call!\n\n");
+    //     funcCall();
+    // }
+    if (check(VAR)) {
         varDef();
     }
     else if (check(IF)) {
@@ -124,20 +149,26 @@ statement() {
     else if (check(METHOD)) {
         funcDef();
     }
-    else if (functionCallPending()) {
-        funcCall();
-    }
-    else {
-        printf("---- unknown expression ----\n");
+    else if (expressionPending()) {
+        expression();
     }
 }
 
 extern void
 expression() {
-    unary();
-    if (operatorPending()) {
-        operator();
-        expression();
+    if (unaryPending()) {
+        unary();
+        if (operatorPending()) {
+            operator();
+            expression();
+        }
+    }
+    else {
+        funcCall();
+        if (operatorPending()) {
+            operator();
+            expression();
+        }
     }
 }
 
@@ -147,29 +178,28 @@ operator() {
     else if (check(MINUS)) match(MINUS);
     else if (check(TIMES)) match(TIMES);
     else if (check(DIVIDE)) match(DIVIDE);
-    else if (check(EQUALS)) match(EQUALS);
+    else if (check(ASSIGN)) match(ASSIGN);
     else if (check(GREATERTHAN)) match(GREATERTHAN);
     else if (check(LESSTHAN)) match(LESSTHAN);
     else if (check(GREATEREQUALS)) match(GREATEREQUALS);
     else if (check(LESSEQUALS)) match(LESSEQUALS);
     else if (check(DOT)) match(DOT);
     else if (check(MOD)) match(MOD);
-    else match(NOT);
-
+    else if (check(NOT)) match(NOT);
 }
 
 extern void
 unary() {
-    if (check(IDENTIFIER)) match(IDENTIFIER);
-    else if (check(INTEGER)) match(INTEGER);
+    if (check(INTEGER)) match(INTEGER);
     else if (check(STRING)) match(STRING);
-    else match(REAL);
+    else if (check(REAL)) match(REAL);
+    else if (check(VOID)) match(VOID);
 }
 
 extern void
 varDef() {
     match(VAR);
-    match(IDENTIFIER);
+    match(VARIABLE);
     if (arrayPending()) {
         match(OBRACKET);
         if (optArgListPending()) {
@@ -177,12 +207,13 @@ varDef() {
         }
         match(CBRACKET);
     }
-    else if (check(EQUALS)) {
-        match(EQUALS);
+    else if (check(ASSIGN)) {
+        match(ASSIGN);
         expression();
     }
     else {
         printf("---- looks like variable definition. can't understand ----\n");
+        error = 1;
     }
 }
 
@@ -226,7 +257,7 @@ forLoop() {
     match(FOR);
     match(OPAREN);
     unary();
-    match(EQUALS);
+    match(ASSIGN);
     match(INTEGER);
     match(SEMI);
     unary();
@@ -243,7 +274,7 @@ forLoop() {
 extern void
 funcDef() {
     match(METHOD);
-    match(IDENTIFIER);
+    match(VARIABLE);
     match(OPAREN);
     if (optArgListPending()) {
         argList();
@@ -258,18 +289,37 @@ funcDef() {
 
 extern void
 funcCall() {
-    unary();
+    match(VARIABLE);
     if (check(OPAREN)) {
         match(OPAREN);
         if (optArgListPending()) {
             argList();
         }
+        if (check(OPAREN)) {
+            match(OPAREN);
+            funcCall();
+        }
         match(CPAREN);
     }
-    else {
-        operator();
-        funcCall();
-    }
+    // unary();
+    // if (check(OPAREN)) {
+    //     match(OPAREN);
+    //     if (optArgListPending()) {
+    //         argList();
+    //     }
+    //     if (check(OPAREN)) {
+    //         match(OPAREN);
+    //         funcCall();
+    //     }
+    //     match(CPAREN);
+    // }
+    // else if (operatorPending()){
+    //     operator();
+    //     funcCall();
+    // }
+    // else {
+    //     match(CPAREN);
+    // }
 }
 
 extern void
@@ -277,6 +327,9 @@ returnStatement() {
     match(RETURN);
     if (expressionPending()) {
         expression();
+    }
+    else if (unaryPending()) {
+        unary();
     }
     match(EXCL);
 }
@@ -319,22 +372,22 @@ includesPending() {
 
 extern int
 optArgListPending() {
-    return unaryPending();
+    return unaryPending() || check(VARIABLE);
 }
 
 extern int
 statementPending() {
-    return expressionPending() || check(VAR) || check(IF) || check(WHILE) || check(FOR) || check(METHOD) || returnPending();
+    return expressionPending() || check(VAR) || check(IF) || check(WHILE) || check(FOR) || check(METHOD);
 }
 
 extern int
 expressionPending() {
-    return unaryPending();
+    return check(VARIABLE);
 }
 
 extern int
 unaryPending() {
-    return check(IDENTIFIER) || check(INTEGER) || check(STRING) || check(REAL);
+    return check(INTEGER) || check(STRING) || check(REAL) || check(VOID);
 }
 
 extern int
@@ -344,18 +397,25 @@ returnPending() {
 
 extern int
 operatorPending() {
-    return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(EQUALS) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT);
+    return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(ASSIGN) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT);
 }
 
 extern int
 functionCallPending() {
-    return unaryPending();
+    return check(OPAREN);
+}
+
+extern int
+arrayPending() {
+    return check(OBRACKET);
 }
 
 /** THE PARSING FUNCTION **/
-extern void
+extern int
 parse(FILE *file) {
     fp = file;
     advance();
-    program();
+    int p =  program();
+    printf("RETURNING FROM PARSE\n\n\n");
+    return p;
 }

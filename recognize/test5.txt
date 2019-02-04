@@ -1,0 +1,12 @@
+main() {
+
+
+
+    var hello = "greetings"!
+
+
+
+    var $$ = 5!
+
+    return!
+}
