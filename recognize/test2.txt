@@ -1,13 +1,13 @@
 #include "hello.h"
-#include <include.h>
+#include <bigMan.h>
 
 main() {
     var x = 1!
     var string = "string"!
     var copy = x!
 
-    var list = [1 2 3]!
-    var empty = []!
+    var list[1, 2, 3]!
+    var empty[]!
 
     if (x) {
         x = x + 10 / 2!
@@ -28,7 +28,7 @@ main() {
         x = x - 1!
     }!
 
-    var listy = []!
+    var listy[]!
     for (i = 0; i < 10; i ++) {
         listy.i = i!
     }!

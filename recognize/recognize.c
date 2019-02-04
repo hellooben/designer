@@ -268,15 +268,20 @@ extern void
 forLoop() {
     match(FOR);
     match(OPAREN);
-    unary();
+    if (unaryPending()) unary();
+    else match(VARIABLE);
     match(ASSIGN);
-    match(INTEGER);
+    if (unaryPending()) unary();
+    else match(VARIABLE);
     match(SEMI);
-    unary();
+    if (unaryPending()) unary();
+    else match(VARIABLE);
     forCheck();
-    match(INTEGER);
+    if (unaryPending()) unary();
+    else match(VARIABLE);
     match(SEMI);
-    unary();
+    if (unaryPending()) unary();
+    else match(VARIABLE);
     forOp();
     match(CPAREN);
     block();
@@ -360,19 +365,23 @@ forOp() {
     else if (check(MINUSMINUS)) match(MINUSMINUS);
     else if (check(PEQUALS)) {
         match(PEQUALS);
-        unary();
+        if (unaryPending()) unary();
+        else expression();
     }
     else if (check(MINUESEQUALS)) {
         match(MINUESEQUALS);
-        unary();
+        if (unaryPending()) unary();
+        else expression();
     }
     else if (check(TIMESEQUALS)) {
         match(MINUESEQUALS);
-        unary();
+        if (unaryPending()) unary();
+        else expression();
     }
     else {
         match(DIVIDEEQUALS);
-        unary();
+        if (unaryPending()) unary();
+        else expression();
     }
 }
 
