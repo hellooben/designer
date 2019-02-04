@@ -81,7 +81,8 @@ main() {
 
 extern void
 argList() {
-    match(IDENTIFIER);
+    // match(IDENTIFIER);
+    unary();
     if (check(COMMA)) {
         match(COMMA);
         argList();
@@ -119,6 +120,15 @@ statement() {
     }
     else if (check(FOR)) {
         forLoop();
+    }
+    else if (check(METHOD)) {
+        funcDef();
+    }
+    else if (functionCallPending()) {
+        funcCall();
+    }
+    else {
+        printf("---- unknown expression ----\n");
     }
 }
 
@@ -160,9 +170,18 @@ extern void
 varDef() {
     match(VAR);
     match(IDENTIFIER);
-    if (check(EQUALS)) {
+    if (arrayPending()) {
+        match(OBRACKET);
+        if (optArgListPending()) {
+            argList();
+        }
+    }
+    else if (check(EQUALS)) {
         match(EQUALS);
         expression();
+    }
+    else {
+        printf("---- looks like variable definition. can't understand ----\n");
     }
 }
 
@@ -215,6 +234,50 @@ forLoop() {
     match(SEMI);
     unary();
     forOp();
+    match(CPAREN);
+    block();
+    match(CBRACE);
+}
+
+extern void
+funcDef() {
+    match(METHOD);
+    match(IDENTIFIER);
+    match(OPAREN);
+    if (optArgListPending()) {
+        argList();
+    }
+    match(CPAREN);
+    block();
+    if (returnPending()) {
+        returnStatement();
+    }
+    match(CBRACE);
+}
+
+extern void
+funcCall() {
+    unary();
+    if (check(OPAREN)) {
+        match(OPAREN);
+        if (optArgListPending()) {
+            argList();
+        }
+        match(CPAREN);
+    }
+    else {
+        operator();
+        funcCall();
+    }
+}
+
+extern void
+returnStatement() {
+    match(RETURN);
+    if (expressionPending()) {
+        expression();
+    }
+    match(EXCL);
 }
 
 extern void
@@ -229,7 +292,22 @@ extern void
 forOp() {
     if (check(PLUSPLUS)) match(PLUSPLUS);
     else if (check(MINUSMINUS)) match(MINUSMINUS);
-    // else if (check(equals)) WORKING HERE!!!!!!
+    else if (check(PEQUALS)) {
+        match(PEQUALS);
+        unary();
+    }
+    else if (check(MINUESEQUALS)) {
+        match(MINUESEQUALS);
+        unary();
+    }
+    else if (check(TIMESEQUALS)) {
+        match(MINUESEQUALS);
+        unary();
+    }
+    else {
+        match(DIVIDEEQUALS);
+        unary();
+    }
 }
 
 /** PENDING FUNCTIONS **/
@@ -240,7 +318,7 @@ includesPending() {
 
 extern int
 optArgListPending() {
-    return check(IDENTIFIER);
+    return unaryPending();
 }
 
 extern int
@@ -266,6 +344,11 @@ returnPending() {
 extern int
 operatorPending() {
     return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(EQUALS) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT);
+}
+
+extern int
+functionCallPending() {
+    return unaryPending();
 }
 
 /** THE PARSING FUNCTION **/

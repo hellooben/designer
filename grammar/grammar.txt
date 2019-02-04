@@ -16,7 +16,7 @@ optList : list
 
 varDef : VAR ID optInit
 
-listDef : VAR ID OBRACKET optList CBRACKET EXCL
+listDef : VAR ID OBRACKET optArgList CBRACKET EXCL
 
 optInit : ASSIGN expr
         | EMPTY
@@ -31,12 +31,12 @@ item : expr
 
 statement : expr
           | varDef
+          | listDef
           | ifStatement
           | whileLoop
           | forLoop
           | funcDef
           | funcCall
-          | returnStatement
 
 statements : statement EXCL
            | statement EXCL statements

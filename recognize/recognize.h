@@ -32,6 +32,9 @@ extern void ifStatement();
 extern void optElse();
 extern void whileLoop();
 extern void forLoop();
+extern void funcDef();
+extern void forCheck();
+extern void forOp();
 
 
 
