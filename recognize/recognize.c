@@ -175,6 +175,7 @@ varDef() {
         if (optArgListPending()) {
             argList();
         }
+        match(CBRACKET);
     }
     else if (check(EQUALS)) {
         match(EQUALS);
