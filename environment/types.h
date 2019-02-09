@@ -63,4 +63,11 @@ extern char *VOID;
 extern char *STRUCT;
 extern char *ENDOFINPUT;
 
+
+// New types for environment
+extern char *ENV;
+extern char *JOIN;
+extern char *TABLE;
+extern char *VALUES;
+
 #endif

@@ -24,4 +24,6 @@ extern LEXEME *update(LEXEME *, LEXEME *, LEXEME *);
 extern LEXEME *insert(LEXEME *, LEXEME *, LEXEME *);
 extern LEXEME *extend(LEXEME *, LEXEME *, LEXEME *);
 
+extern void display(LEXEME *);
+
 #endif

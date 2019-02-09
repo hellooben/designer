@@ -23,6 +23,7 @@ struct lexeme {
     double realVal;
     char *stringVal;
     int lineNum;
+    // char *name;
 
     LEXEME *left;
     LEXEME *right;
@@ -37,10 +38,26 @@ newLEXEME(char *type) {
     l->realVal = 0.0;
     l->stringVal = "";
     l->lineNum = LINECOUNT;
+    // l->name = "";
     l->left = l;
     l->right = l;
     return l;
 }
+
+// extern LEXEME *
+// newLEXEMEvar(char *type, char *name) {
+//     LEXEME *l = malloc(sizeof(LEXEME));
+//     assert(l != 0);
+//     l->type = type;
+//     l->intVal = 0;
+//     l->realVal = 0.0;
+//     l->stringVal = "";
+//     l->lineNum = LINECOUNT;
+//     l->name = name;
+//     l->left = l;
+//     l->right = l;
+//     return l;
+// }
 
 extern LEXEME *
 newLEXEMEInt(char *type, int intVal) {
@@ -51,6 +68,7 @@ newLEXEMEInt(char *type, int intVal) {
     l->realVal = 0.0;
     l->stringVal = "";
     l->lineNum = LINECOUNT;
+    // l->name = "";
     l->left = l;
     l->right = l;
     return l;
@@ -65,6 +83,7 @@ newLEXEMEReal(char *type, double realVal) {
     l->realVal = realVal;
     l->stringVal = "";
     l->lineNum = LINECOUNT;
+    // l->name = "";
     l->left = l;
     l->right = l;
     return l;
@@ -79,6 +98,7 @@ newLEXEMEString(char *type, char *stringVal) {
     l->realVal = 0.0;
     l->stringVal = stringVal;
     l->lineNum = LINECOUNT;
+    // l->name = "";
     l->left = l;
     l->right = l;
     return l;
@@ -370,6 +390,11 @@ getType(LEXEME *l) {
 extern int
 getLEXEMEInt(LEXEME *l) {
     return l->intVal;
+}
+
+extern char *
+getLEXEMEString(LEXEME *l) {
+    return l->stringVal;
 }
 
 extern int

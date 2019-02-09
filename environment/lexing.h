@@ -21,6 +21,7 @@ extern void skipWhiteSpace(FILE *);
 extern LEXEME *lex(FILE *);
 extern char *getType(LEXEME *);
 extern int getLEXEMEInt(LEXEME *);
+extern char *getLEXEMEString(LEXEME *);
 extern int getLEXEMEline(LEXEME *);
 extern void displayLEXEME(LEXEME *);
 

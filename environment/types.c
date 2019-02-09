@@ -61,3 +61,9 @@ char *METHOD = "METHOD";
 char *VOID = "VOID";
 char *STRUCT = "STRUCT";
 char *ENDOFINPUT = "ENDOFINPUT";
+
+
+char *ENV = "ENVIRONMENT";
+char *JOIN = "JOIN";
+char *TABLE = "TABLE";
+char *VALUES = "VALUES";
