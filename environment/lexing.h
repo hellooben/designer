@@ -24,4 +24,9 @@ extern int getLEXEMEInt(LEXEME *);
 extern int getLEXEMEline(LEXEME *);
 extern void displayLEXEME(LEXEME *);
 
+// New functions for environment
+extern void setLEXEMEright(LEXEME *, LEXEME *);
+extern void setLEXEMEleft(LEXEME *, LEXEME *);
+extern LEXEME *getLEXEMEleft(LEXEME *);
+extern LEXEME *getLEXEMEright(LEXEME *);
 #endif
