@@ -1,5 +1,5 @@
 #Ben Bailey
-#makefile for lexical analysis
+#makefile for environment module
 
 OPTS = -Wall -Wextra
 OBJS = types.o lexing.o environment.o env-test.o environment

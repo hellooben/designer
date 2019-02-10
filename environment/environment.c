@@ -97,11 +97,11 @@ update(LEXEME *variable, LEXEME *env, LEXEME *new) {
 }
 
 extern LEXEME *
-insert(LEXEME *variable, LEXEME *env, LEXEME *new) {
+insert(LEXEME *variable, LEXEME *env, LEXEME *value) {
     LEXEME *table = car(env);
     setCar(table, cons(JOIN, variable, car(table)));
-    setCdr(table, cons(JOIN, new, cdr(table)));
-    return new;
+    setCdr(table, cons(JOIN, value, cdr(table)));
+    return value;
 }
 
 extern LEXEME *
@@ -111,16 +111,45 @@ extend(LEXEME *variables, LEXEME *values, LEXEME *env) {
 
 extern void
 display(LEXEME *env) {
+    int tables = 0;
     while (env != NULL) {
+        // printf("env is not null\n");
+        if (tables == 0) printf("Table %d (local):\n", tables);
+        else printf("Table %d:\n", tables);
+        // displayLEXEME(env);
         LEXEME *table = car(env);
         LEXEME *vars = car(table);
         LEXEME *vals = cdr(table);
         while (vars != NULL) {
-            displayLEXEME(vars);
-            displayLEXEME(vals);
+            printf("    ");
+            displayLEXEME(car(vars));
+            printf(" = ");
+            displayLEXEME(car(vals));
+            printf("\n");
             vars = cdr(vars);
             vals = cdr(vals);
         }
         env = cdr(env);
+        tables ++;
     }
+    printf("\n\n");
+}
+
+extern void
+displayLocal(LEXEME *env) {
+    // printf("Table %d:\n", tables);
+    // displayLEXEME(env);
+    LEXEME *table = car(env);
+    LEXEME *vars = car(table);
+    LEXEME *vals = cdr(table);
+    while (vars != NULL) {
+        printf("    ");
+        displayLEXEME(car(vars));
+        printf(" = ");
+        displayLEXEME(car(vals));
+        printf("\n");
+        vars = cdr(vars);
+        vals = cdr(vals);
+    }
+    printf("\n\n");
 }

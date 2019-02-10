@@ -405,18 +405,18 @@ getLEXEMEline(LEXEME *l) {
 extern void
 displayLEXEME(LEXEME *l) {
     if (strcmp(getType(l), VARIABLE) == 0) {
-        printf("IDENTIFIER %s\n", l->stringVal);
+        printf("IDENTIFIER %s", l->stringVal);
     }
     else if (strcmp(getType(l), STRING) == 0) {
-        printf("STRING \"%s\"\n", l->stringVal);
+        printf("STRING \"%s\"", l->stringVal);
     }
     else if (strcmp(getType(l), INTEGER) == 0) {
-        printf("INT %d\n", l->intVal);
+        printf("INT %d", l->intVal);
     }
     else if (strcmp(getType(l), REAL) == 0) {
-        printf("DOUBLE %lf\n", l->realVal);
+        printf("DOUBLE %lf", l->realVal);
     }
     else {
-        printf("%s\n", getType(l));
+        printf("%s", getType(l));
     }
 }
