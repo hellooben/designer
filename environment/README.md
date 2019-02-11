@@ -8,7 +8,7 @@ The environment has the following capabilities:
 - setting the value of an identifier: `update()`
 - creating an empty environment: `create()`
 - extending an environment, while keeping the integrity of current variables and their values: `extend()`
-- displaying the local environment; displaying the entire environment: `displayLocal(); display()`
+- displaying the local environment; displaying the entire environment: `displayLocal()`; `display()`
 <br><br>
 
 To use this module, a makefile is provided. A `make` or `make environment` command will compile the module, and simply running `environment` will test the environment functions using `env-test.c`, in which all of the aforementioned capabilities are tested; the output will shows that they work as intended.<br><br>
