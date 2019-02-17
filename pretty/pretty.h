@@ -3,8 +3,8 @@ Ben Bailey
 pp.h
 ***/
 
-#ifndef __PP_INCLUDED__
-#define __PP_INCLUDED__
+#ifndef __PRETTY_INCLUDED__
+#define __PRETTY_INCLUDED__
 
 #include <stdio.h>
 #include "lexing.h"

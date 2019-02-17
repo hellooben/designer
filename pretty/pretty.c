@@ -3,7 +3,7 @@ Ben Bailey
 pp.c
 ***/
 
-#include "pp.h"
+#include "pretty.h"
 #include "lexing.h"
 #include "types.h"
 #include "recognize.h"

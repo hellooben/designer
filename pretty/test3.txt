@@ -4,9 +4,15 @@ method isWhiteSpace(ch, fp) {
 if (ch == 10) {
 return 1!
 }
-else if (ch >= 64) {return 0!}
-else if (ch == 0) {return 0!}
-else if (ch >= 33 && ch <= 62) {return 0!}
+else if (ch >= 64) {
+return 0!
+}
+else if (ch == 0) {
+return 0!
+}
+else if (ch >= 33 && ch <= 62) {
+return 0!
+}
 else {
 return 1!
 }!
