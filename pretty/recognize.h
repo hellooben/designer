@@ -10,7 +10,7 @@ recognize.h
 #include <stdlib.h>
 #include "types.h"
 #include "lexing.h"
-#include "pp.h"
+// #include "pp.h"
 
 extern int check(char *);
 extern LEXEME *advance();

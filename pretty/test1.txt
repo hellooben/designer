@@ -1,0 +1,12 @@
+#include "hello.h"
+#include <whatsup.h>
+
+? some comment actions
+?
+
+main(void) {
+    var x = 1.14!
+
+
+    return!
+}

@@ -7,7 +7,7 @@ recognize.c
 #include "recognize.h"
 #include "lexing.h"
 #include "types.h"
-#include "pp.h"
+// #include "pp.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -474,7 +474,7 @@ forCheck() {
 
 extern LEXEME *
 forOp() {
-    LEXEME *op=NULL;
+    LEXEME *op = NULL;
     LEXEME *u = NULL;
     LEXEME *e = NULL;
     if (check(PLUSPLUS)) op = match(PLUSPLUS);
