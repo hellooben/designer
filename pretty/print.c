@@ -8,7 +8,7 @@ print.c
 #include <string.h>
 #include "recognize.h"
 #include "types.h"
-// #include "pp.h"
+#include "pp.h"
 // #include "lexing.h"
 
 int main(int argc, char **argv) {
@@ -19,11 +19,15 @@ int main(int argc, char **argv) {
     }
 
     FILE *fp = fopen(argv[argc-1], "r");
-    printf("%s\n", argv[argc-1]);
-    printf("gonna parse it\n");
+    printf("%s\n\n", argv[argc-1]);
+    // printf("gonna parse it\n");
     LEXEME *tree = parse(fp);
-    printf("returned from parse\n");
-    if (tree) printf("TREE BUILT\n");
+    // printf("returned from parse\n");
+    // if (tree) printf("TREE BUILT\n");
+    // printf("Gonna print this guy\n");
+    pp(tree);
+    printf("\n");
+    // printf("DONE!\n");
 
     return 0;
 }

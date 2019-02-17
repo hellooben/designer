@@ -230,6 +230,7 @@ statement() {
         statement = returnStatement();
     }
     else if (expressionPending()) {
+        // printf("statement going for expression\n");
         statement = expression();
     }
     else statement = NULL;
@@ -238,8 +239,9 @@ statement() {
 
 extern LEXEME *
 expression() {
-    LEXEME *u, *o, *e, *f;
+    LEXEME *u, *o, *e, *f, *v;
     if (unaryPending()) {
+        // printf("found a unary\n");
         u = unary();
         if (operatorPending()) {
             o = operator();
@@ -252,7 +254,21 @@ expression() {
         return cons(EXPRESSION, u, cons(GLUE, o, e));
     }
     else {
-        f = funcCall();
+        v = match(VARIABLE);
+        if (check(OPAREN)) {
+            match(OPAREN);
+            // printf("it's a function call\n");
+            f = funcCall(v);
+            if (operatorPending()) {
+                o = operator();
+                e = expression();
+            }
+            else {
+                o = NULL;
+                e = NULL;
+            }
+            return cons(EXPRESSION, f, cons(GLUE, o, e));
+        }
         if (operatorPending()) {
             o = operator();
             e = expression();
@@ -261,8 +277,34 @@ expression() {
             o = NULL;
             e = NULL;
         }
-        return cons(EXPRESSION, f, cons(GLUE, o, e));
+        return cons(EXPRESSION, v, cons(GLUE, o, e));
     }
+    // else if (expressionPending()) {
+    //     printf("found a variable\n");
+    //     v = expression();
+    //     if (operatorPending()) {
+    //         o = operator();
+    //         e = expression();
+    //     }
+    //     else {
+    //         o = NULL;
+    //         e = NULL;
+    //     }
+    //     return cons(EXPRESSION, v, cons(GLUE, o, e));
+    // }
+    // else {
+    //     printf("it's a funcion call\n");
+    //     f = funcCall();
+    //     if (operatorPending()) {
+    //         o = operator();
+    //         e = expression();
+    //     }
+    //     else {
+    //         o = NULL;
+    //         e = NULL;
+    //     }
+    //     return cons(EXPRESSION, f, cons(GLUE, o, e));
+    // }
 }
 
 extern LEXEME *
@@ -300,6 +342,7 @@ unary() {
     else if (check(STRING)) u = match(STRING);
     else if (check(REAL)) u = match(REAL);
     else if (check(VOID)) u = match(VOID);
+    // else if (check(VARIABLE)) u = match(VARIABLE);
     else u = NULL;
     return cons(UNARY, u, NULL);
 }
@@ -343,9 +386,11 @@ ifStatement() {
     match(CBRACE);
     if (check(ELSE)) {
         o = optElse();
-        return cons(IFSTATEMENT, expr, cons(GLUE, b, o));
+        // return cons(IFSTATEMENT, expr, cons(GLUE, b, o));
     }
-    else return cons(IFSTATEMENT, expr, b);
+    else o = NULL;
+    return cons(IFSTATEMENT, expr, cons(GLUE, b, o));
+    // else return cons(IFSTATEMENT, expr, b);
 }
 
 extern LEXEME *
@@ -353,12 +398,21 @@ optElse() {
     LEXEME *i, *b;
     match(ELSE);
     if (check(IF)) {
+        // printf("found another if\n");
         i = ifStatement();
     }
     else i = NULL;
-    b = block();
-    match(CBRACE);
-    return cons(OPTELSE, b, i);
+    if (i == NULL) {
+        b = block();
+        match(CBRACE);
+        // printf("returning from optelse\n");
+        return cons(OPTELSE, b, NULL);
+    }
+    else {
+        b = NULL;
+        return cons(OPTELSE, i, NULL);
+    }
+
 }
 
 extern LEXEME *
@@ -389,14 +443,14 @@ forLoop() {
     fc = forCheck();
     if (unaryPending()) l4 = unary();
     else l4 = match(VARIABLE);
-     match(SEMI);
-     if (unaryPending()) l5 = unary();
-     else l5 = match(VARIABLE);
-     fop = forOp();
-     match(CPAREN);
-     b = block();
-     match(CBRACE);
-     return cons(FORLOOP, cons(GLUE, cons(GLUE, l1, l2), cons(GLUE, cons(GLUE, fc, cons(GLUE, l3, l4)), cons(GLUE, fop, l5))), b);
+    match(SEMI);
+    if (unaryPending()) l5 = unary();
+    else l5 = match(VARIABLE);
+    fop = forOp();
+    match(CPAREN);
+    b = block();
+    match(CBRACE);
+    return cons(FORLOOP, cons(GLUE, cons(GLUE, l1, l2), cons(GLUE, cons(GLUE, fc, cons(GLUE, l3, l4)), cons(GLUE, fop, l5))), b);
 }
 
 extern LEXEME *
@@ -420,27 +474,38 @@ funcDef() {
 }
 
 extern LEXEME *
-funcCall() {
-    LEXEME *name, *arg, *call;
-    name = match(VARIABLE);
-    if (check(OPAREN)) {
-        match(OPAREN);
-        if (optArgListPending()) {
-            arg = argList();
-        }
-        else arg = NULL;
-        if (check(OPAREN)) {
-            match(OPAREN);
-            call = funcCall();
-        }
-        else call = NULL;
-        match(CPAREN);
+funcCall(LEXEME *name) {
+    // printf("in funcall\n");
+    // LEXEME *name, *arg, *call;
+    LEXEME *arg;
+    // name = match(VARIABLE);
+    // match(OPAREN);
+    // printf("here\n");
+    if (optArgListPending()) {
+        arg = argList();
     }
-    else {
-        arg = NULL;
-        call = NULL;
-    }
-    return cons(FUNCCALL, name, cons(GLUE, arg, call));
+    else arg = NULL;
+    match(CPAREN);
+    return cons(FUNCCALL, name, arg);
+
+    // if (check(OPAREN)) {
+    //     match(OPAREN);
+    //     if (optArgListPending()) {
+    //         arg = argList();
+    //     }
+    //     else arg = NULL;
+    //     if (check(OPAREN)) {
+    //         match(OPAREN);
+    //         call = funcCall();
+    //     }
+    //     else call = NULL;
+    //     match(CPAREN);
+    // }
+    // else {
+    //     arg = NULL;
+    //     call = NULL;
+    // }
+    // return cons(FUNCCALL, name, cons(GLUE, arg, call));
 }
 
 extern LEXEME *
@@ -479,6 +544,11 @@ forOp() {
     LEXEME *e = NULL;
     if (check(PLUSPLUS)) op = match(PLUSPLUS);
     else if (check(MINUSMINUS)) op = match(MINUSMINUS);
+    else if (check(ASSIGN)) {
+        op = match(ASSIGN);
+        if (unaryPending()) u = unary();
+        else e = expression();
+    }
     else if (check(PEQUALS)) {
         op = match(PEQUALS);
         if (unaryPending()) u = unary();

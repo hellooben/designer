@@ -25,10 +25,13 @@ extern void printOperator(LEXEME *);
 extern void printUnary(LEXEME *);
 extern void printVarDef(LEXEME *);
 extern void printIfStatement(LEXEME *);
+extern void printOptElse(LEXEME *);
 extern void printWhileLoop(LEXEME *);
 extern void printForLoop(LEXEME *);
 extern void printFuncCall(LEXEME *);
 extern void printFuncDef(LEXEME *);
 extern void printReturn(LEXEME *);
+extern void printForCheck(LEXEME *);
+extern void printForOp(LEXEME *);
 
 #endif

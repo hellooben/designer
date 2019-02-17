@@ -1,0 +1,44 @@
+#include "hello.h"
+#include <bigMan.h>
+main(argc, argv) {
+var x = 1!
+var string = "string"!
+var copy = x!
+var list[1, 2, 3]!
+var empty[]!
+if (x) {
+x = x + 10 / 2!
+}!
+say("it is backwards", stdout)!
+if (string = "string") {
+say(string)!
+}
+else if (string = "gnirts") {
+print("it is backwards", stdout)!
+}
+else {
+print("it is not string", stderr)!
+}!
+while (x > 0) {
+copy = copy * 2!
+x = x - 1!
+}!
+var listy[]!
+for (i = 0; i < 10; i ++) {
+listy.i = i!
+}!
+method add(x, y) {
+return x + y!
+}!
+method fib(n) {
+if (n <= 1) {
+return n!
+}
+else {
+return fib(n-1) + fib(n-2)!
+}!
+}!
+new = add(x, copy)!
+print(fib(new), stdout)!
+return!
+}

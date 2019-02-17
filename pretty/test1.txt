@@ -7,6 +7,7 @@
 main(void) {
     var x = 1.14!
 
+    say("it is backwards", stdout)!
 
     return!
 }

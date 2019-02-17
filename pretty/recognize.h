@@ -40,7 +40,7 @@ extern LEXEME *optElse();
 extern LEXEME *whileLoop();
 extern LEXEME *forLoop();
 extern LEXEME *funcDef();
-extern LEXEME *funcCall();
+extern LEXEME *funcCall(LEXEME *);
 extern LEXEME *returnStatement();
 extern LEXEME *forCheck();
 extern LEXEME *forOp();
