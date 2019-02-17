@@ -163,7 +163,7 @@ include() {
 
 extern LEXEME *
 mainMethod() {
-    LEXEME *arg, *block;
+    LEXEME *arg, *b;
     match(MAIN);
     match(OPAREN);
     if (optArgListPending()) {
@@ -171,9 +171,9 @@ mainMethod() {
     }
     else arg = NULL;
     match(CPAREN);
-    block = block();
+    b = block();
     match(CBRACE);
-    return cons(MAINMETHOD, arg, block);
+    return cons(MAINMETHOD, arg, b);
 }
 
 extern LEXEME *
@@ -232,12 +232,13 @@ statement() {
     else if (expressionPending()) {
         statement = expression();
     }
+    else statement = NULL;
     return cons(STATEMENT, statement, NULL);
 }
 
 extern LEXEME *
 expression() {
-    LEXEME *u, *o, *e;
+    LEXEME *u, *o, *e, *f;
     if (unaryPending()) {
         u = unary();
         if (operatorPending()) {
@@ -248,6 +249,7 @@ expression() {
             o = NULL;
             e = NULL;
         }
+        return cons(EXPRESSION, u, cons(GLUE, o, e));
     }
     else {
         f = funcCall();
@@ -259,8 +261,8 @@ expression() {
             o = NULL;
             e = NULL;
         }
+        return cons(EXPRESSION, f, cons(GLUE, o, e));
     }
-    return cons(EXPRESSION, u, cons(GLUE, o, e));
 }
 
 extern LEXEME *
@@ -332,50 +334,48 @@ varDef() {
 
 extern LEXEME *
 ifStatement() {
-    LEXEME *expr, *block, *optElse;
+    LEXEME *expr, *b, *o;
     match(IF);
     match(OPAREN);
     expr = expression();
     match(CPAREN);
-    block = block();
+    b = block();
     match(CBRACE);
     if (check(ELSE)) {
-        optElse = optElse();
-        return cons(IFSTATEMENT, expr, cons(GLUE, block, optElse));
+        o = optElse();
+        return cons(IFSTATEMENT, expr, cons(GLUE, b, o));
     }
-    else return cons(IFSTATEMENT, expr, block);
+    else return cons(IFSTATEMENT, expr, b);
 }
 
 extern LEXEME *
 optElse() {
-    LEXEME *i, *block;
+    LEXEME *i, *b;
     match(ELSE);
     if (check(IF)) {
         i = ifStatement();
     }
-    else {
-        i = NULL;
-        block = block();
-        match(CBRACE);
-    }
-    return cons(OPTELSE, block, i);
+    else i = NULL;
+    b = block();
+    match(CBRACE);
+    return cons(OPTELSE, b, i);
 }
 
 extern LEXEME *
 whileLoop() {
-    LEXEME *expr, *block;
+    LEXEME *expr, *b;
     match(WHILE);
     match(OPAREN);
     expr = expression();
     match(CPAREN);
-    block = block();
+    b = block();
     match(CBRACE);
-    return cons(WHILELOOP, expr, block);
+    return cons(WHILELOOP, expr, b);
 }
 
 extern LEXEME *
 forLoop() {
-    LEXEME *l1, *l2, *l3, *forCheck, *l4, *l5, *forOp, *block;
+    LEXEME *l1, *l2, *l3, *fc, *l4, *l5, *fop, *b;
     match(FOR);
     match(OPAREN);
     if (unaryPending()) l1 = unary();
@@ -386,22 +386,22 @@ forLoop() {
     match(SEMI);
     if (unaryPending()) l3 = unary();
     else l3 = match(VARIABLE);
-    forCheck = forCheck();
+    fc = forCheck();
     if (unaryPending()) l4 = unary();
     else l4 = match(VARIABLE);
      match(SEMI);
      if (unaryPending()) l5 = unary();
      else l5 = match(VARIABLE);
-     forOp = forOp();
+     fop = forOp();
      match(CPAREN);
-     block = block();
+     b = block();
      match(CBRACE);
-     return cons(FORLOOP, cons(GLUE, cons(GLUE, l1, l2), cons(GLUE, cons(GLUE, forCheck, cons(GLUE, l3, l4)), cons(GLUE, forOp, l5))), block);
+     return cons(FORLOOP, cons(GLUE, cons(GLUE, l1, l2), cons(GLUE, cons(GLUE, fc, cons(GLUE, l3, l4)), cons(GLUE, fop, l5))), b);
 }
 
 extern LEXEME *
 funcDef() {
-    LEXEME *name, *arg, *block, *r;
+    LEXEME *name, *arg, *b, *r;
     match(METHOD);
     name = match(VARIABLE);
     match(OPAREN);
@@ -410,13 +410,13 @@ funcDef() {
     }
     else arg = NULL;
     match(CPAREN);
-    block = block();
+    b = block();
     if (returnPending()) {
         r = returnStatement();
     }
     else r = NULL;
     match(CBRACE);
-    return cons(FUNCDEF, cons(GLUE, name, arg), cons(GLUE, block, r));
+    return cons(FUNCDEF, cons(GLUE, name, arg), cons(GLUE, b, r));
 }
 
 extern LEXEME *
@@ -445,21 +445,21 @@ funcCall() {
 
 extern LEXEME *
 returnStatement() {
-    LEXEME *expr, *unary;
+    LEXEME *expr, *u;
     match(RETURN);
     if (expressionPending()) {
         expr = expression();
-        unary = NULL;
+        u = NULL;
     }
     else if (unaryPending()) {
-        unary = unary();
+        u = unary();
         expr = NULL;
     }
     else {
         expr = NULL;
-        unary = NULL;
+        u = NULL;
     }
-    return cons(RETURNSTATEMENT, expr, unary);
+    return cons(RETURNSTATEMENT, expr, u);
 }
 
 extern LEXEME *
@@ -474,7 +474,9 @@ forCheck() {
 
 extern LEXEME *
 forOp() {
-    LEXEME *op, *u, *e;
+    LEXEME *op=NULL;
+    LEXEME *u = NULL;
+    LEXEME *e = NULL;
     if (check(PLUSPLUS)) op = match(PLUSPLUS);
     else if (check(MINUSMINUS)) op = match(MINUSMINUS);
     else if (check(PEQUALS)) {

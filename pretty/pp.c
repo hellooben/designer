@@ -18,7 +18,7 @@ pp(LEXEME *tree) {
     }
     else if (getType(tree) == REAL) {
         //fixLine(tree);
-        printf("%lf", getLEXEMEReal(tree));
+        printf("%f", getLEXEMEReal(tree));
     }
     else if (getType(tree) == STRING) {
         //fixLine(tree);

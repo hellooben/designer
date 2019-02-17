@@ -23,6 +23,10 @@ struct lexeme {
     double realVal;
     char *stringVal;
     int lineNum;
+    // char *name;
+
+    LEXEME *left;
+    LEXEME *right;
 };
 
 extern LEXEME *
@@ -34,8 +38,26 @@ newLEXEME(char *type) {
     l->realVal = 0.0;
     l->stringVal = "";
     l->lineNum = LINECOUNT;
+    // l->name = "";
+    l->left = l;
+    l->right = l;
     return l;
 }
+
+// extern LEXEME *
+// newLEXEMEvar(char *type, char *name) {
+//     LEXEME *l = malloc(sizeof(LEXEME));
+//     assert(l != 0);
+//     l->type = type;
+//     l->intVal = 0;
+//     l->realVal = 0.0;
+//     l->stringVal = "";
+//     l->lineNum = LINECOUNT;
+//     l->name = name;
+//     l->left = l;
+//     l->right = l;
+//     return l;
+// }
 
 extern LEXEME *
 newLEXEMEInt(char *type, int intVal) {
@@ -46,6 +68,9 @@ newLEXEMEInt(char *type, int intVal) {
     l->realVal = 0.0;
     l->stringVal = "";
     l->lineNum = LINECOUNT;
+    // l->name = "";
+    l->left = l;
+    l->right = l;
     return l;
 }
 
@@ -58,6 +83,9 @@ newLEXEMEReal(char *type, double realVal) {
     l->realVal = realVal;
     l->stringVal = "";
     l->lineNum = LINECOUNT;
+    // l->name = "";
+    l->left = l;
+    l->right = l;
     return l;
 }
 
@@ -70,7 +98,30 @@ newLEXEMEString(char *type, char *stringVal) {
     l->realVal = 0.0;
     l->stringVal = stringVal;
     l->lineNum = LINECOUNT;
+    // l->name = "";
+    l->left = l;
+    l->right = l;
     return l;
+}
+
+extern void
+setLEXEMEleft(LEXEME *l, LEXEME *set) {
+    l->left = set;
+}
+
+extern void
+setLEXEMEright(LEXEME *l, LEXEME *set) {
+    l->right = set;
+}
+
+extern LEXEME *
+getLEXEMEleft(LEXEME *l) {
+    return l->left;
+}
+
+extern LEXEME *
+getLEXEMEright(LEXEME *l) {
+    return l->right;
 }
 
 extern LEXEME *
@@ -359,18 +410,18 @@ getLEXEMEline(LEXEME *l) {
 extern void
 displayLEXEME(LEXEME *l) {
     if (strcmp(getType(l), VARIABLE) == 0) {
-        printf("IDENTIFIER %s\n", l->stringVal);
+        printf("IDENTIFIER %s", l->stringVal);
     }
     else if (strcmp(getType(l), STRING) == 0) {
-        printf("STRING \"%s\"\n", l->stringVal);
+        printf("STRING \"%s\"", l->stringVal);
     }
     else if (strcmp(getType(l), INTEGER) == 0) {
-        printf("INT %d\n", l->intVal);
+        printf("INT %d", l->intVal);
     }
     else if (strcmp(getType(l), REAL) == 0) {
-        printf("DOUBLE %lf\n", l->realVal);
+        printf("DOUBLE %lf", l->realVal);
     }
     else {
-        printf("%s\n", getType(l));
+        printf("%s", getType(l));
     }
 }
