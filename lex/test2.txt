@@ -1,20 +1,22 @@
 #include "hello.h"
-#include <include.h>
+#include <bigMan.h>
 
 main() {
     var x = 1!
     var string = "string"!
     var copy = x!
 
-    var list = [1 2 3]!
-    var empty = []!
+    var list[1, 2, 3]!
+    var empty[]!
 
     if (x) {
         x = x + 10 / 2!
     }!
 
+    print("it is backwards", stdout)!
+
     if (string = "string") {
-        print("it is string", stdout)!
+        say(string)!
     }
     else if (string = "gnirts") {
         print("it is backwards", stdout)!
@@ -28,7 +30,7 @@ main() {
         x = x - 1!
     }!
 
-    var listy = []!
+    var listy[]!
     for (i = 0; i < 10; i ++) {
         listy.i = i!
     }!

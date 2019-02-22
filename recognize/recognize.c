@@ -49,7 +49,7 @@ matchNoAdvance(char *type) {
         exit(0);
     }
     // else {
-    //     // printf("MATCHED %s\n", getType(currentLexeme));
+        // printf("MATCHED %s\n", getType(currentLexeme));
     // }
 }
 
