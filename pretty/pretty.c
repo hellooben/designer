@@ -50,7 +50,7 @@ pp(LEXEME *tree) {
     else if (getType(tree) == PLUSPLUS) printf("++");
     else if (getType(tree) == MINUSMINUS) printf("--");
     else if (getType(tree) == PEQUALS) printf("+=");
-    else if (getType(tree) == MINUESEQUALS) printf("-=");
+    else if (getType(tree) == MINUSEQUALS) printf("-=");
     else if (getType(tree) == TIMESEQUALS) printf("*=");
     else if (getType(tree) == DIVIDEEQUALS) printf("/=");
     else if (getType(tree) == DOT) printf(".");
@@ -161,7 +161,7 @@ printExpression(LEXEME *l) {
     pp(car(l)); //unary, funcCall
     if (car(cdr(l))) {
         pp(car(cdr(l))); //operator
-        pp(cdr(cdr(l))); //expression
+        if (cdr(cdr(l))) pp(cdr(cdr(l))); //expression
     }
 }
 
@@ -234,16 +234,11 @@ printWhileLoop(LEXEME *l) {
 extern void
 printForLoop(LEXEME *l) {
     printf("for (");
-    pp(car(car(car(l)))); //unary or variable
-    printf(" = ");
-    pp(cdr(car(car(l)))); //unary or variable
+    pp(car(car(l))); //varDef
     printf("; ");
-    pp(car(cdr(car(cdr(car(l)))))); //unary or variable
-    pp(car(car(cdr(car(l))))); //forCheck
-    pp(cdr(cdr(car(cdr(car(l)))))); //unary or variable
+    pp(car(cdr(car(l)))); //forCheck aka expression
     printf("; ");
-    pp(cdr(cdr(cdr(car(l))))); //unary or variable
-    pp(car(cdr(cdr(car(l))))); //forOp
+    pp(cdr(cdr(car(l)))); //forOp aka expression
     printf(")");
     pp(cdr(l)); //block
     printf("\n}");

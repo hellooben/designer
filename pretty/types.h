@@ -13,6 +13,7 @@ extern char *STRING;
 extern char *REAL;
 extern char *UNKNOWN;
 extern char *BADNUMBER;
+extern char *BOOLEAN;
 
 extern char *POUND;
 extern char *QUOTE;
@@ -43,7 +44,7 @@ extern char *EQUALSEQUALS;
 extern char *PLUSPLUS;
 extern char *MINUSMINUS;
 extern char *PEQUALS;
-extern char *MINUESEQUALS;
+extern char *MINUSEQUALS;
 extern char *TIMESEQUALS;
 extern char *DIVIDEEQUALS;
 extern char *GREATEREQUALS;

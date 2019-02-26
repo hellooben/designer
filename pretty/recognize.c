@@ -254,6 +254,7 @@ expression() {
         return cons(EXPRESSION, u, cons(GLUE, o, e));
     }
     else {
+        // printf("going for variable\n");
         v = match(VARIABLE);
         if (check(OPAREN)) {
             match(OPAREN);
@@ -269,9 +270,11 @@ expression() {
             }
             return cons(EXPRESSION, f, cons(GLUE, o, e));
         }
-        if (operatorPending()) {
+        else if (operatorPending()) {
+            // printf("in expression operator pending \n");
             o = operator();
-            e = expression();
+            if (expressionPending() || unaryPending()) e = expression();
+            else e = NULL;
         }
         else {
             o = NULL;
@@ -326,7 +329,7 @@ operator() {
     else if (check(PLUSPLUS)) op = match(PLUSPLUS);
     else if (check(MINUSMINUS)) op = match(MINUSMINUS);
     else if (check(PEQUALS)) op = match(PEQUALS);
-    else if (check(MINUESEQUALS)) op = match(MINUESEQUALS);
+    else if (check(MINUSEQUALS)) op = match(MINUSEQUALS);
     else if (check(TIMESEQUALS)) op = match(TIMESEQUALS);
     else if (check(DIVIDEEQUALS)) op = match(DIVIDEEQUALS);
     else if (check(ANDAND)) op = match(ANDAND);
@@ -429,28 +432,17 @@ whileLoop() {
 
 extern LEXEME *
 forLoop() {
-    LEXEME *l1, *l2, *l3, *fc, *l4, *l5, *fop, *b;
     match(FOR);
     match(OPAREN);
-    if (unaryPending()) l1 = unary();
-    else l1 = match(VARIABLE);
-    match(ASSIGN);
-    if (unaryPending()) l2 = unary();
-    else l2 = match(VARIABLE);
+    LEXEME *vd = varDef();
     match(SEMI);
-    if (unaryPending()) l3 = unary();
-    else l3 = match(VARIABLE);
-    fc = forCheck();
-    if (unaryPending()) l4 = unary();
-    else l4 = match(VARIABLE);
+    LEXEME *fc = expression();
     match(SEMI);
-    if (unaryPending()) l5 = unary();
-    else l5 = match(VARIABLE);
-    fop = forOp();
+    LEXEME *fo = expression();
     match(CPAREN);
-    b = block();
+    LEXEME *b = block();
     match(CBRACE);
-    return cons(FORLOOP, cons(GLUE, cons(GLUE, l1, l2), cons(GLUE, cons(GLUE, fc, cons(GLUE, l3, l4)), cons(GLUE, fop, l5))), b);
+    return cons(FORLOOP, cons(GLUE, vd, cons(GLUE, fc, fo)), b);
 }
 
 extern LEXEME *
@@ -554,13 +546,13 @@ forOp() {
         if (unaryPending()) u = unary();
         else e = expression();
     }
-    else if (check(MINUESEQUALS)) {
-        op = match(MINUESEQUALS);
+    else if (check(MINUSEQUALS)) {
+        op = match(MINUSEQUALS);
         if (unaryPending()) u = unary();
         else e = expression();
     }
     else if (check(TIMESEQUALS)) {
-        op = match(MINUESEQUALS);
+        op = match(MINUSEQUALS);
         if (unaryPending()) u = unary();
         else e = expression();
     }
@@ -610,7 +602,7 @@ returnPending() {
 
 extern int
 operatorPending() {
-    return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(ASSIGN) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT) || check(ANDAND) || check(OROR) || check(EQUALSEQUALS) || check(PLUSPLUS) || check(MINUSMINUS) || check(TIMESEQUALS) || check(DIVIDEEQUALS);
+    return check(PLUS) || check(MINUS) || check(TIMES) || check(DIVIDE) || check(ASSIGN) || check(GREATERTHAN) || check(LESSTHAN) || check(GREATEREQUALS) || check(LESSEQUALS) || check(DOT) || check(MOD) || check(NOT) || check(ANDAND) || check(OROR) || check(EQUALSEQUALS) || check(PLUSPLUS) || check(MINUSMINUS) || check(TIMESEQUALS) || check(DIVIDEEQUALS) || check(PEQUALS) || check(MINUSEQUALS);
 }
 
 extern int

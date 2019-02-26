@@ -24,7 +24,7 @@ copy = copy * 2!
 x = x - 1!
 }!
 var listy[]!
-for (i = 0; i < 10; i ++) {
+for (var i = 0; i < 10; i ++) {
 listy.i = i!
 }!
 method add(x, y) {

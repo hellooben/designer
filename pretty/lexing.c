@@ -339,7 +339,7 @@ lex(FILE *fp) {
             dub = checkDoubleOperator(ch, fp);
             if (dub == 0) return newLEXEME(MINUS);
             else if (dub == 1) return newLEXEME(MINUSMINUS);
-            else return newLEXEME(MINUESEQUALS);
+            else return newLEXEME(MINUSEQUALS);
         case '/' :
             if (checkDoubleOperator(ch, fp)) {
                 return newLEXEME(DIVIDEEQUALS);

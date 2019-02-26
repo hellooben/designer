@@ -6,8 +6,15 @@
 
 main(void) {
     var x = 1.14!
+    x --!
 
-    say("it is backwards", stdout)!
+    var list[]!
+
+    for (var i = 0; i<10; i++) {
+        print("it is backwards", stdout)!
+    }!
+
+    list . 0 = "hello"!
 
     return!
 }
