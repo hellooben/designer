@@ -90,4 +90,13 @@ extern char *GLUE;
 extern char *FORCHECK;
 extern char *FOROP;
 
+extern char *BUILTIN;
+extern char *LAMBDA;
+extern char *ARRAY;
+extern char *CLOSURE;
+extern char *JOIN;
+extern char *ENV;
+extern char *TABLE;
+extern char *VALUES;
+
 #endif

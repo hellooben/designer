@@ -1,0 +1,8 @@
+main() {
+    var x = 5!
+
+    print(x*2)!
+    print()!
+
+    return!
+}

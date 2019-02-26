@@ -9,7 +9,7 @@ environment.c
 #include "lexing.h"
 #include "types.h"
 
-int sameVariable(LEXEME *l1, LEXEME *l2) {
+extern int sameVariable(LEXEME *l1, LEXEME *l2) {
     if (strcmp(getType(l1), getType(l2)) == 0) {
         if (strcmp(getLEXEMEString(l1), getLEXEMEString(l2)) == 0) {
             return 1;
@@ -66,6 +66,7 @@ lookup(LEXEME *variable, LEXEME *env) {
         LEXEME *vals = cdr(table);
         while (vars != NULL) {
             if (sameVariable(variable, car(vars))) {
+                // printf("Gonna return from lookup\n");
                 return car(vals);
             }
             vars = cdr(vars);

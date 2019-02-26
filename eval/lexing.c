@@ -24,6 +24,11 @@ struct lexeme {
     char *stringVal;
     int lineNum;
     // char *name;
+    //function value
+    LEXEME *(*fval)(LEXEME *); //fval is a pointer to a function
+    //array value
+    LEXEME **aval;
+    int arraySize;
 
     LEXEME *left;
     LEXEME *right;
@@ -39,6 +44,9 @@ newLEXEME(char *type) {
     l->stringVal = "";
     l->lineNum = LINECOUNT;
     // l->name = "";
+    l->fval = getLEXEMEleft;
+    l->arraySize = 0;
+    l->aval = malloc(sizeof(LEXEME *));
     l->left = l;
     l->right = l;
     return l;
@@ -69,6 +77,9 @@ newLEXEMEInt(char *type, int intVal) {
     l->stringVal = "";
     l->lineNum = LINECOUNT;
     // l->name = "";
+    l->fval = getLEXEMEleft;
+    l->arraySize = 0;
+    l->aval = malloc(sizeof(LEXEME *));
     l->left = l;
     l->right = l;
     return l;
@@ -84,6 +95,9 @@ newLEXEMEReal(char *type, double realVal) {
     l->stringVal = "";
     l->lineNum = LINECOUNT;
     // l->name = "";
+    l->fval = getLEXEMEleft;
+    l->arraySize = 0;
+    l->aval = malloc(sizeof(LEXEME *));
     l->left = l;
     l->right = l;
     return l;
@@ -99,6 +113,43 @@ newLEXEMEString(char *type, char *stringVal) {
     l->stringVal = stringVal;
     l->lineNum = LINECOUNT;
     // l->name = "";
+    l->fval = getLEXEMEleft;
+    l->arraySize = 0;
+    l->aval = malloc(sizeof(LEXEME *));
+    l->left = l;
+    l->right = l;
+    return l;
+}
+
+extern LEXEME *
+newLEXEMEBuiltin(LEXEME *(*f)(LEXEME *)) {
+    LEXEME *l = malloc(sizeof(LEXEME));
+    assert(l != 0);
+    l->type = BUILTIN;
+    l->intVal = 0;
+    l->realVal = 0.0;
+    l->stringVal = "";
+    l->lineNum = LINECOUNT;
+    l->fval = f;
+    l->arraySize = 0;
+    l->aval = malloc(sizeof(LEXEME *));
+    l->left = l;
+    l->right = l;
+    return l;
+}
+
+extern LEXEME *
+newLEXEMEArray(char *type, int size, char *name) {
+    LEXEME *l = malloc(sizeof(LEXEME));
+    assert(l != 0);
+    l->type = type;
+    l->intVal = 0;
+    l->realVal = 0.0;
+    l->stringVal = name;
+    l->lineNum = LINECOUNT;
+    l->fval = getLEXEMEleft;
+    l->arraySize = size;
+    l->aval = malloc(sizeof(LEXEME *) * size);
     l->left = l;
     l->right = l;
     return l;
@@ -122,6 +173,32 @@ getLEXEMEleft(LEXEME *l) {
 extern LEXEME *
 getLEXEMEright(LEXEME *l) {
     return l->right;
+}
+
+extern LEXEME **
+getLEXEMEarray(LEXEME *l) {
+    return l->aval;
+}
+
+extern int
+getLEXEMEarraySize(LEXEME *l) {
+    return l->arraySize;
+}
+
+extern LEXEME *
+setLEXEMEarray(LEXEME *l, int index, LEXEME *val) {
+    assert(index < getLEXEMEarraySize(l));
+    LEXEME **array = getLEXEMEarray(l);
+    array[index] = val;
+    // return array[index];
+    return l;
+}
+
+extern LEXEME *
+getLEXEMEarrayVal(LEXEME *l, int index) {
+    LEXEME **array = getLEXEMEarray(l);
+    if (index >= getLEXEMEarraySize(l)) return NULL;
+    else return array[index];
 }
 
 extern LEXEME *
@@ -184,6 +261,7 @@ lexVariableorKeyword(FILE *fp) {
     else if (strcmp(buffer, "method") == 0) return newLEXEME(METHOD);
     else if (strcmp(buffer, "var") == 0) return newLEXEME(VAR);
     else if (strcmp(buffer, "struct") == 0) return newLEXEME(STRUCT);
+    else if (strcmp(buffer, "lambda") == 0) return newLEXEME(LAMBDA);
     else if (strcmp(buffer, "VOID") == 0 || strcmp(buffer, "void") == 0) return newLEXEME(VOID);
     else {
         return newLEXEMEString(VARIABLE, buffer);

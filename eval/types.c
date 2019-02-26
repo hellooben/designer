@@ -89,3 +89,12 @@ char *FORCHECK = "FORCHECK";
 char *FOROP = "FOROP";
 
 char *GLUE = "GLUE";
+
+char *BUILTIN = "BUILTIN";
+char *LAMBDA = "LAMBDA";
+char *ARRAY = "ARRAY";
+char *CLOSURE = "CLOSURE";
+char *JOIN = "JOIN";
+char *ENV = "ENV";
+char *TABLE = "TABLE";
+char *VALUES = "VALUES";

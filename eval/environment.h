@@ -16,6 +16,7 @@ extern LEXEME *car(LEXEME *);
 extern LEXEME *cdr(LEXEME *);
 extern LEXEME *setCar(LEXEME *, LEXEME *);
 extern LEXEME *setCdr(LEXEME *, LEXEME *);
+extern int sameVariable(LEXEME *, LEXEME *);
 
 
 extern LEXEME *create();
