@@ -7,6 +7,7 @@ pp.c
 #include "lexing.h"
 #include "types.h"
 #include "recognize.h"
+#include "environment.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -159,10 +160,27 @@ printStatement(LEXEME *l) {
 
 extern void
 printExpression(LEXEME *l) {
-    pp(car(l)); //unary, funcCall
-    if (car(cdr(l))) {
-        pp(car(cdr(l))); //operator
-        if (cdr(cdr(l))) pp(cdr(cdr(l))); //expression
+    // pp(car(l)); //unary, funcCall
+    // if (car(cdr(l))) {
+    //     pp(car(cdr(l))); //operator
+    //     if (cdr(cdr(l))) pp(cdr(cdr(l))); //expression
+    // }
+    if (getType(car(l)) == GLUE) { //array access
+        pp(car(car(l))); //variable
+        printf("[");
+        if (cdr(car(l))) pp(cdr(car(l))); //index
+        printf("]");
+        if (car(cdr(l))) {
+           pp(car(cdr(l))); //operator
+           if (cdr(cdr(l))) pp(cdr(cdr(l))); //expression
+       }
+    }
+    else {
+        pp(car(l)); //unary, funcCall
+        if (car(cdr(l))) {
+            pp(car(cdr(l))); //operator
+            if (cdr(cdr(l))) pp(cdr(cdr(l))); //expression
+        }
     }
 }
 

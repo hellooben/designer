@@ -1,0 +1,8 @@
+main() {
+    var string = "hello"!
+
+    print(string)!
+    print()!
+
+    print(``)!
+}

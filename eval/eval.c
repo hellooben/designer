@@ -78,7 +78,7 @@ eval(LEXEME *tree, LEXEME *env) {
     else if (getType(tree) == RETURNSTATEMENT) return evalReturn(tree, env); //done
 
     else {
-        printf("bad expression\n");
+        printf("This expression cannot be currently recognized\nFatal on line %d\n", getLEXEMEline(tree));
         return NULL;
     }
 }
@@ -231,6 +231,10 @@ evalVarDef(LEXEME *tree, LEXEME *env) {
             LEXEME *new = evalNewArray(eargs, getLEXEMEString(car(tree)));
             return insert(car(tree), env, new);
         }
+        else {
+            printf("CANNOT EVAL THIS VARDEF\nFatal on line %d\n", getLEXEMEline(cdr(tree)));
+            exit(-1);
+        }
     }
     else {
         LEXEME *eargs = eval(cdr(tree), env); //evaluated expressions
@@ -266,7 +270,7 @@ evalGetArray(LEXEME *name, int index, LEXEME *env) {
             return getLEXEMEarrayVal(arr, index);
         }
         else {
-            printf("INDEX RANGE OUT OF BOUNDS\nFatal on line %d\n", getLEXEMEline(arr));
+            printf("INDEX RANGE OUT OF BOUNDS\nFatal on line %d\n", getLEXEMEline(name));
             exit(1);
         }
     }
@@ -274,6 +278,7 @@ evalGetArray(LEXEME *name, int index, LEXEME *env) {
         printf("ARRAY WAS NOT FOUND\nFatal on line %d\n", getLEXEMEline(name));
         exit(1);
     }
+    // return NULL;
 }
 
 extern int
@@ -335,7 +340,7 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
     LEXEME *closure = eval(name, env);
     // printf("TYPE OF CLOSURE: %s\n", getType(closure));
     if (closure == NULL) {
-            printf("THIS FUNCTIONS DOES NOT EXIST\nFatal on line %d\n", getLEXEMEline(tree));
+            printf("THIS FUNCTION DOES NOT EXIST\nFatal on line %d\n", getLEXEMEline(tree));
             exit(1);
     }
     else if (getType(closure) == BUILTIN) {
@@ -358,6 +363,7 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
         if (r) return eval(r, xenv);
         else return res;
     }
+    // return NULL;
 }
 
 extern LEXEME *
@@ -479,7 +485,7 @@ evalSetArray(LEXEME *name, int index, LEXEME *new, LEXEME *env) {
             return setLEXEMEarray(arr, index, new);
         }
         else {
-            printf("INDEX RANGE OUT OF BOUNDS\nFatal on line %d\n", getLEXEMEline(arr));
+            printf("INDEX RANGE OUT OF BOUNDS\nFatal on line %d\n", getLEXEMEline(name));
             exit(1);
         }
     }
@@ -487,6 +493,7 @@ evalSetArray(LEXEME *name, int index, LEXEME *new, LEXEME *env) {
         printf("ARRAY WAS NOT FOUND\nFatal on line %d\n", getLEXEMEline(name));
         exit(1);
     }
+    // return NULL;
 }
 
 
@@ -565,6 +572,10 @@ evalOp(LEXEME *tree, LEXEME *env) {
     else if (getType(tree) == TIMESEQUALS) return evalTimesEquals(tree, env); //done
     else if (getType(tree) == DIVIDEEQUALS) return evalDivideEquals(tree, env); //done
     else if (getType(tree) == ASSIGN) return evalAssign(tree, env); //done
+    else {
+        printf("UNDEFINED OPERATOR\nFatal on line %d\n", getLEXEMEline(tree));
+        exit(1);
+    }
 }
 
 extern LEXEME *

@@ -48,7 +48,8 @@ matchNoAdvance(char *type) {
     // printf("Trying to match CURRENT( %s ) and PASSED( %s )\n", getType(currentLexeme), type);
     if (check(type) == 0) {
         // printf("!!!!!!!!!!!!------- FOUND A SYNTAX ERROR -------!!!!!!!!!!!!\n\n\n\n");
-        printf("FATAL: Syntax error before or on line %d\nillegal\n", getLEXEMEline(currentLexeme));
+        printf("FATAL: Syntax error before or on line %d\n", getLEXEMEline(currentLexeme));
+        printf("Tried to match CURRENT( %s ) with EXPECTED( %s )\nILLEGAL\n", getType(currentLexeme), type);
         error = 1;
         exit(0);
     }
@@ -404,7 +405,7 @@ varDef() {
     else {
         // printf("---- looks like variable definition. can't understand ----\n");
 
-        printf("FATAL: Syntax error before or on line %d\nillegal\n", getLEXEMEline(currentLexeme));
+        printf("FATAL: Syntax error before or on line %d\nIllegal variable definition.\n", getLEXEMEline(currentLexeme));
         error = 1;
         exit(0);
     }

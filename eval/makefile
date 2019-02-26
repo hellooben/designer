@@ -2,7 +2,7 @@
 #makefile for the evaluator
 
 OPTS = -Wall -Wextra
-OBJS = types.o lexing.o recognize.o environment.o pretty.o eval.o print.o driver.o eval a.out
+OBJS = types.o lexing.o recognize.o environment.o pretty.o eval.o print.o driver.o eval a.out print pp
 
 all : eval
 
@@ -13,9 +13,39 @@ eval :
 # pp :
 # 	gcc $(OPTS) -c print.c pp.c recognize.c lexing.c types.c
 # 	gcc $(OPTS) types.o lexing.o recognize.o pp.o print.o -o pp
-# print :
-# 	gcc $(OPTS) -c print.c pretty.c recognize.c lexing.c types.c
-# 	gcc $(OPTS) types.o lexing.o recognize.o pretty.o print.o -o pp
+print :
+	gcc $(OPTS) -c print.c pretty.c recognize.c environment.c lexing.c types.c
+	gcc $(OPTS) types.o lexing.o environment.o recognize.o pretty.o print.o -o pp
+
+error1 : print #syntax error: missing "!"
+	./pp e1.txt
+
+error1x : eval
+	./eval e1.txt
+
+error2 : print #syntax error: unexpected character
+	./pp e2.txt
+
+error2x : eval
+	./eval e2.txt
+
+error3 : print #syntax error: typed variable definition
+	./pp e3.txt
+
+error3x : eval
+	./eval e3.txt
+
+error4 : print #semantic error: array access out of bounds
+	./pp e4.txt
+
+error4x : eval
+	./eval e4.txt
+
+error5 : print #semantic error: array items not of same type
+	./pp e5.txt
+
+error5x : eval
+	./eval e5.txt
 #
 # test1 : print
 # 	@echo Original file:

@@ -23,14 +23,15 @@ int main(int argc, char **argv) {
 
     LEXEME *tree = parse(fp);
 
-    pp(tree);
-    printf("\n");
+    // pp(tree);
+    // printf("\n");
     LEXEME *env = create();
-    printf("Environment created\n");
+    // printf("Environment created\n");
     insert(newLEXEMEString(VARIABLE, "print"), env, newLEXEMEBuiltin(evalPrint));
     insert(newLEXEMEString(VARIABLE, "printNewLine"), env, newLEXEMEBuiltin(evalPrintNewLine));
-    printf("Inserted builtin functions\n");
-    LEXEME *e = eval(tree, env);
+    // printf("Inserted builtin functions\n");
+    eval(tree, env);
+    printf("\n");
 
-    if (e) printf("hello\n");
+    // if (e) printf("hello\n");
 }

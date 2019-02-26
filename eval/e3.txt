@@ -1,0 +1,10 @@
+main() {
+    var string = "hello"!
+
+    print(string)!
+    print()!
+
+    int x = 4!
+    print(x)!
+    print()!
+}

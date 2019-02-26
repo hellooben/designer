@@ -1,0 +1,13 @@
+main() {
+    var x = 1!
+    var string = "hello"!
+
+    var list[1, 2, 3]!
+    var m = list[5]!
+
+    print(m)!
+    print()!
+
+
+    return!
+}

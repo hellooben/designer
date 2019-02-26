@@ -74,7 +74,7 @@ lookup(LEXEME *variable, LEXEME *env) {
         }
         env = cdr(env);
     }
-    printf("Variable is undefined\n");
+    printf("Variable reference from line %d is undefined! Cannot access.\n", getLEXEMEline(variable));
     return NULL;
 }
 
@@ -93,7 +93,7 @@ update(LEXEME *variable, LEXEME *env, LEXEME *new) {
         }
         env = cdr(env);
     }
-    printf("Variable is undefined\n");
+    printf("Variable reference from line %d is undefined! Cannot update.\n", getLEXEMEline(variable));
     return NULL;
 }
 
