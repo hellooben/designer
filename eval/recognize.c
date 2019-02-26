@@ -274,6 +274,7 @@ expression() {
         else if (check(OBRACKET)) {
             match(OBRACKET);
             if (check(INTEGER)) i = match(INTEGER);
+            else if (check(VARIABLE)) i = match(VARIABLE);
             else i = NULL;
             match(CBRACKET);
             if (i != NULL && operatorPending()) {
@@ -395,6 +396,7 @@ varDef() {
         return cons(VARDEF, var, list);
     }
     else if (check(ASSIGN)) {
+        // printf("there is assign\n");
         match(ASSIGN);
         expr = expression();
         return cons(VARDEF, var, expr);

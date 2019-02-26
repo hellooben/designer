@@ -1,7 +1,19 @@
 main() {
-    var x = 5!
+    var x = 1!
+    var string = "hello"!
 
-    print(x*2)!
+    var list[1, 2, 3]!
+    var m = list[x]!
+
+    print(m)!
+    print()!
+
+    print(string)!
+    print()!
+    print("hey")!
+    print()!
+
+    print(list[2] + x)!
     print()!
 
     return!

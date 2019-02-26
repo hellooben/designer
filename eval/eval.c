@@ -163,7 +163,18 @@ evalExpression(LEXEME *tree, LEXEME *env) {
         if (getType(car(tree)) == GLUE) { //it has a size: array
             // printf("IT IS AN ARRAY\n");
             if (cdr(car(tree)) != NULL) { //if size isn't null
-                int index = getLEXEMEInt(cdr(car(tree))); //get the index
+                int index;
+                if (getType(cdr(car(tree))) == VARIABLE) {
+                    LEXEME *find = eval(cdr(car(tree)), env);
+                    index = getLEXEMEInt(find);
+                }
+                else if (getType(cdr(car(tree))) == INTEGER) {
+                    index = getLEXEMEInt(cdr(car(tree))); //get the index
+                }
+                else {
+                    printf("INVALIED ARRAY INDEX\nFatal on line %d\n", getLEXEMEline(tree));
+                    exit(1);
+                }
                 return evalGetArray(car(car(tree)), index, env); //evaluate with variable and index
             }
             else {
@@ -179,16 +190,25 @@ evalExpression(LEXEME *tree, LEXEME *env) {
     else { //if operator
         // printf("FOUND OPERATOR IN EXPRESSION\n");
         if (cdr(cdr(tree)) == NULL) { //if no expression after operator
-            // if (getType(car(tree)) == GLUE) { //it has a size: array
-            //     setCar(car(cdr(tree)), car(tree))
-            // }
-            setCar(car(car(cdr(tree))), car(car(tree))); //set operator->left = variable
+            if (getType(car(tree)) == GLUE) { //it has a size: array
+                int index = getLEXEMEInt(cdr(car(tree))); //get the index
+                LEXEME *set = evalGetArray(car(car(tree)), index, env);
+                // setCar(car(car(cdr(tree))), car(car(car(tree))));
+                setCar(car(car(cdr(tree))), set);
+            }
+            else setCar(car(car(cdr(tree))), car(car(tree))); //set operator->left = variable
             // setCar(car(cdr(tree)), car(tree)); //set operator->left = variable
             return evalSelfOp(car(car(cdr(tree))), env); //eval operator
         }
         else {
             // printf("FOUND EXPRESSION AFTER OPERATOR\n");
-            setCar(car(car(cdr(tree))), car(tree)); //operator->left = variable
+            if (getType(car(tree)) == GLUE) { //it has a size: array
+                int index = getLEXEMEInt(cdr(car(tree))); //get the index
+                LEXEME *set = evalGetArray(car(car(tree)), index, env);
+                // setCar(car(car(cdr(tree))), car(car(car(tree))));
+                setCar(car(car(cdr(tree))), set);
+            }
+            else setCar(car(car(cdr(tree))), car(car(tree))); //operator->left = variable
             // setCar(car(cdr(tree)), car(tree)); //operator->left = variable
             setCdr(car(car(cdr(tree))), cdr(cdr(tree))); //operator->right = expr
             // setCdr(car(cdr(tree)), cdr(cdr(tree))); //operator->right = expr
@@ -200,14 +220,16 @@ evalExpression(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalVarDef(LEXEME *tree, LEXEME *env) {
-    // printf("In EVALVARDEF\n");
+    // printf("In EVALVARDEF\nright type: %s\n", getType(cdr(tree)));
     if (cdr(tree)) {
         if (getType(cdr(tree)) != ARGLIST) {
             // printf("Creating a non-list variable\n");
             return insert(car(tree), env, eval(cdr(tree), env));
         }
-        else {
-            printf("INVALID VARDEF EXPRESSION\nFatal on line %d\n", getLEXEMEline(cdr(tree)));
+        else if (getType(cdr(tree)) == ARGLIST) {
+            LEXEME *eargs = eval(cdr(tree), env); //evaluated expressions
+            LEXEME *new = evalNewArray(eargs, getLEXEMEString(car(tree)));
+            return insert(car(tree), env, new);
         }
     }
     else {
@@ -215,12 +237,14 @@ evalVarDef(LEXEME *tree, LEXEME *env) {
         LEXEME *new = evalNewArray(eargs, getLEXEMEString(car(tree)));
         return insert(car(tree), env, new);
     }
+
 }
 
 extern LEXEME *
 evalNewArray(LEXEME *eargs, char *name) {
     // printf("In EVALNEWARRAY\n");
     int size = getListSize(eargs);
+    // printf("SIZE: %d\n", size);
     LEXEME *a = newLEXEMEArray(ARRAY, size, name);
     // LEXEME **array = getLEXEMEarray(a);
     LEXEME *next = eargs;
@@ -236,8 +260,9 @@ evalNewArray(LEXEME *eargs, char *name) {
 extern LEXEME *
 evalGetArray(LEXEME *name, int index, LEXEME *env) {
     LEXEME *arr = eval(name, env);
+    // printf("ARR TYPE: %s\n", getType(arr));
     if (arr != NULL) {
-        if (index < getLEXEMEarraySize(name)) {
+        if (index < getLEXEMEarraySize(arr)) {
             return getLEXEMEarrayVal(arr, index);
         }
         else {
@@ -1020,9 +1045,9 @@ evalDivideEquals(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalAssign(LEXEME *tree, LEXEME *env) {
-    // printf("in EVALASSIGN\n");
+    printf("in EVALASSIGN\n");
     LEXEME *right = eval(cdr(tree), env);
-    // printf("RIGHT TYPE: %s\n", getType(right));
+    printf("RIGHT TYPE: %s\n", getType(right));
     if (getType(car(tree)) == GLUE) { //updating an array
         // LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
         LEXEME *a = evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), right, env);
