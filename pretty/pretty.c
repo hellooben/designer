@@ -68,6 +68,7 @@ pp(LEXEME *tree) {
     else if (getType(tree) == EXPRESSION) printExpression(tree);
     else if (getType(tree) == OPERATOR) printOperator(tree);
     else if (getType(tree) == UNARY) printUnary(tree);
+    else if (getType(tree) == LAMBDA) printLambda(tree);
     else if (getType(tree) == VARDEF) printVarDef(tree);
     else if (getType(tree) == IFSTATEMENT) printIfStatement(tree);
     else if (getType(tree) == OPTELSE) printOptElse(tree);
@@ -173,6 +174,15 @@ printOperator(LEXEME *l) {
 extern void
 printUnary(LEXEME *l) {
     if (car(l)) pp(car(l)); //unary
+}
+
+extern void
+printLambda(LEXEME *l) {
+    printf("lambda (");
+    if (car(cdr(l))) pp(car(cdr(l))); //arglist
+    printf(")");
+    pp(cdr(cdr(l))); //block
+    printf("\n}");
 }
 
 extern void

@@ -37,14 +37,14 @@ test2 : print
 
 test3 : print
 	@echo Original file:
-	@cat test3.txt
+	@cat test10.txt
 	@echo Pretty Printed version of the original:
-	@./pp test3.txt > test3.txt.printed
-	@cat test3.txt.printed
+	@./pp test10.txt > test10.txt.printed
+	@cat test10.txt.printed
 	@echo Pretty Printed version of the Pretty Printed version:
-	@./pp test3.txt.printed > test3.txt.printed1
-	@cat test3.txt.printed1
-	diff -s -q test3.txt.printed test3.txt.printed1
+	@./pp test10.txt.printed > test10.txt.printed1
+	@cat test10.txt.printed1
+	diff -s -q test10.txt.printed test10.txt.printed1
 
 # test2 : print
 # 	./pp test2.txt

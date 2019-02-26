@@ -23,6 +23,7 @@ extern void printStatement(LEXEME *);
 extern void printExpression(LEXEME *);
 extern void printOperator(LEXEME *);
 extern void printUnary(LEXEME *);
+extern void printLambda(LEXEME *);
 extern void printVarDef(LEXEME *);
 extern void printIfStatement(LEXEME *);
 extern void printOptElse(LEXEME *);

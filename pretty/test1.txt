@@ -6,7 +6,9 @@
 
 main(void) {
     var x = 1.14!
-    x --!
+    var res = lambda(i) {i ++!}!
+
+    print(res(x))!
 
     var list[]!
 

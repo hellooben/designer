@@ -34,6 +34,7 @@ extern LEXEME *statement();
 extern LEXEME *expression();
 extern LEXEME *operator();
 extern LEXEME *unary();
+extern LEXEME *lambda();
 extern LEXEME *varDef();
 extern LEXEME *ifStatement();
 extern LEXEME *optElse();

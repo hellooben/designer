@@ -90,4 +90,8 @@ extern char *GLUE;
 extern char *FORCHECK;
 extern char *FOROP;
 
+extern char *BUILTIN;
+extern char *LAMBDA;
+extern char *ARRAY;
+
 #endif

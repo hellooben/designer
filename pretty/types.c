@@ -89,3 +89,7 @@ char *FORCHECK = "FORCHECK";
 char *FOROP = "FOROP";
 
 char *GLUE = "GLUE";
+
+char *BUILTIN = "BUILTIN";
+char *LAMBDA = "LAMBDA";
+char *ARRAY = "ARRAY";

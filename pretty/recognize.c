@@ -239,7 +239,7 @@ statement() {
 
 extern LEXEME *
 expression() {
-    LEXEME *u, *o, *e, *f, *v;
+    LEXEME *u, *o, *e, *f, *v, *i;
     if (unaryPending()) {
         // printf("found a unary\n");
         u = unary();
@@ -269,6 +269,21 @@ expression() {
                 e = NULL;
             }
             return cons(EXPRESSION, f, cons(GLUE, o, e));
+        }
+        else if (check(OBRACKET)) {
+            match(OBRACKET);
+            if (check(INTEGER)) i = match(INTEGER);
+            else i = NULL;
+            match(CBRACKET);
+            if (i != NULL && operatorPending()) {
+                o = operator();
+                e = expression();
+            }
+            else {
+                o = NULL;
+                e = NULL;
+            }
+            return cons(EXPRESSION, cons(GLUE, v, i), cons(GLUE, o, e));
         }
         else if (operatorPending()) {
             // printf("in expression operator pending \n");
@@ -345,9 +360,23 @@ unary() {
     else if (check(STRING)) u = match(STRING);
     else if (check(REAL)) u = match(REAL);
     else if (check(VOID)) u = match(VOID);
+    else if (check(LAMBDA)) u = lambda();
     // else if (check(VARIABLE)) u = match(VARIABLE);
     else u = NULL;
     return cons(UNARY, u, NULL);
+}
+
+extern LEXEME *
+lambda() {
+    LEXEME *arg, *b;
+    match(LAMBDA);
+    match(OPAREN);
+    if (optArgListPending()) arg = argList();
+    else arg = NULL;
+    match(CPAREN);
+    b = block();
+    match(CBRACE);
+    return cons(LAMBDA, NULL, cons(GLUE, arg, b));
 }
 
 extern LEXEME *
@@ -592,7 +621,7 @@ expressionPending() {
 
 extern int
 unaryPending() {
-    return check(INTEGER) || check(STRING) || check(REAL) || check(VOID);
+    return check(INTEGER) || check(STRING) || check(REAL) || check(VOID) || check(LAMBDA);
 }
 
 extern int

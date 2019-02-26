@@ -14,6 +14,8 @@ extern LEXEME *newLEXEME(char *);
 extern LEXEME *newLEXEMEInt(char *, int);
 extern LEXEME *newLEXEMEReal(char *, double);
 extern LEXEME *newLEXEMEString(char *, char *);
+extern LEXEME *newLEXEMEBuiltin(LEXEME *(*f)(LEXEME *));
+extern LEXEME *newLEXEMEArray(char *, int, char *);
 extern LEXEME *lexNumber(FILE *);
 extern LEXEME *lexVariableorKeyword(FILE *);
 extern LEXEME *lexString(FILE *);
@@ -30,4 +32,9 @@ extern void setLEXEMEright(LEXEME *, LEXEME *);
 extern void setLEXEMEleft(LEXEME *, LEXEME *);
 extern LEXEME *getLEXEMEleft(LEXEME *);
 extern LEXEME *getLEXEMEright(LEXEME *);
+extern LEXEME **getLEXEMEarray(LEXEME *);
+extern int getLEXEMEarraySize(LEXEME *);
+extern LEXEME *setLEXEMEarray(LEXEME *, int, LEXEME *);
+extern LEXEME *getLEXEMEarrayVal(LEXEME *, int);
+
 #endif
