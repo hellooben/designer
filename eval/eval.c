@@ -147,8 +147,8 @@ extern LEXEME *
 evalStatements(LEXEME *tree, LEXEME *env) {
     // printf("In EVALSTATEMENTS\n");
     LEXEME *result = eval(car(tree), env); //statement
-    if (cdr(tree)) eval(cdr(tree), env); //statements
-    return result; //this might cause things to work in reverse
+    if (cdr(tree)) return eval(cdr(tree), env); //statements
+    else return result; //this might cause things to work in reverse
 }
 
 extern LEXEME *
@@ -373,8 +373,9 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
 
         LEXEME *res = eval(body, xenv);
         // printf("RES: %s\n", getType(res));
-        if (r) return eval(r, xenv);
-        else return res;
+        // if (r) return eval(r, xenv);
+        // else return res;
+        return res;
     }
     // return NULL;
 }

@@ -1,9 +1,17 @@
 main() {
     method add(x, y) {
-        return x + y!
+        var n = x * y!
+        print("n: ")!
+        print(n)!
+        print()!
+        var m =  x + y + n!
+        print("m: ")!
+        print(m)!
+        print()!
+        return m!
     }!
 
-    var sum = add(1, 299)!
+    var sum = add(2, 50)!
     print(sum)!
     print()!
 }
