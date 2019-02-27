@@ -71,6 +71,7 @@ extern char *INCLUDES;
 extern char *INCLUDE;
 extern char *MAINMETHOD;
 extern char *ARGLIST;
+extern char *PARAMLIST;
 extern char *BLOCK;
 extern char *STATEMENTS;
 extern char *STATEMENT;

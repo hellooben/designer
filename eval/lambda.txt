@@ -1,0 +1,11 @@
+main() {
+    method f(x) {
+        lambda (y) {x + y!}!
+    }!
+
+    var a = f(3)!
+    var v = f(11)!
+
+    print(a(5))!
+    print(v(6))!
+}

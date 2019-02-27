@@ -1,0 +1,9 @@
+main() {
+    method add(x, y) {
+        return x + y!
+    }!
+
+    var sum = add(1, 299)!
+    print(sum)!
+    print()!
+}

@@ -10,7 +10,9 @@ environment.c
 #include "types.h"
 
 extern int sameVariable(LEXEME *l1, LEXEME *l2) {
+    // printf("IN sameVariable\nl1: %s || l2: %s\n", getType(l1), getType(l2));
     if (strcmp(getType(l1), getType(l2)) == 0) {
+        // printf("SAME TYPES\nl1: %s || l2: %s\n", getLEXEMEString(l1), getLEXEMEString(l2));
         if (strcmp(getLEXEMEString(l1), getLEXEMEString(l2)) == 0) {
             return 1;
         }
@@ -60,6 +62,7 @@ create() {
 
 extern LEXEME *
 lookup(LEXEME *variable, LEXEME *env) {
+    // printf("INLOOKUP\nVARIABLE TYPE: %s\n", getType(variable));
     while (env != NULL) {
         LEXEME *table = car(env);
         LEXEME *vars = car(table);
@@ -107,7 +110,7 @@ insert(LEXEME *variable, LEXEME *env, LEXEME *value) {
 
 extern LEXEME *
 extend(LEXEME *variables, LEXEME *values, LEXEME *env) {
-    return cons(ENV, cons(VALUES, variables, values), env);
+    return cons(ENV, cons(TABLE, variables, values), env);
 }
 
 extern void
@@ -119,8 +122,11 @@ display(LEXEME *env) {
         else printf("Table %d:\n", tables);
         // displayLEXEME(env);
         LEXEME *table = car(env);
+        // printf("got table: %s\n", getType(table));
         LEXEME *vars = car(table);
+        // printf("got vars: %s\n", getType(car(vars)));
         LEXEME *vals = cdr(table);
+        // printf("got vals: %s\n", getType(car(vals)));
         while (vars != NULL) {
             printf("    ");
             displayLEXEME(car(vars));

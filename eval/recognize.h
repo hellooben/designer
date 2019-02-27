@@ -29,6 +29,7 @@ extern LEXEME *includes();
 extern LEXEME *include();
 extern LEXEME *mainMethod();
 extern LEXEME *argList();
+extern LEXEME *paramList();
 extern LEXEME *block();
 extern LEXEME *statements();
 extern LEXEME *statement();

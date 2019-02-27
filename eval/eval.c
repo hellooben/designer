@@ -20,6 +20,7 @@ eval(LEXEME *tree, LEXEME *env) {
     // switch(getType(tree)) {
     if (getType(tree) == INTEGER) return tree;
     else if (getType(tree) == STRING) return tree;
+    else if (getType(tree) == REAL) return tree;
     else if (getType(tree) == VARIABLE) {
         // printf("EVAL-ing A VARIABLE\n");
         return lookup(tree, env);
@@ -44,6 +45,7 @@ eval(LEXEME *tree, LEXEME *env) {
     else if (getType(tree) == LESSTHAN) return evalOp(tree, env);
     else if (getType(tree) == GREATEREQUALS) return evalOp(tree, env);
     else if (getType(tree) == LESSEQUALS) return evalOp(tree, env);
+    else if (getType(tree) == EQUALSEQUALS) return evalOp(tree, env);
     //AND and OR short-circuit
     // else if (getType(tree) == AND) return evalShortCircuitOp(tree, env);
     // else if (getType(tree) == OR) return evalShortCircuitOp(tree, env);
@@ -172,13 +174,13 @@ evalExpression(LEXEME *tree, LEXEME *env) {
                     index = getLEXEMEInt(cdr(car(tree))); //get the index
                 }
                 else {
-                    printf("INVALIED ARRAY INDEX\nFatal on line %d\n", getLEXEMEline(tree));
+                    printf("INVALID ARRAY INDEX\nFatal on line %d\n", getLEXEMEline(tree));
                     exit(1);
                 }
                 return evalGetArray(car(car(tree)), index, env); //evaluate with variable and index
             }
             else {
-                printf("INVALIED ARRAY INDEX\nFatal on line %d\n", getLEXEMEline(tree));
+                printf("INVALID ARRAY INDEX\nFatal on line %d\n", getLEXEMEline(tree));
                 exit(1);
             }
         }
@@ -203,10 +205,11 @@ evalExpression(LEXEME *tree, LEXEME *env) {
         else {
             // printf("FOUND EXPRESSION AFTER OPERATOR\n");
             if (getType(car(tree)) == GLUE) { //it has a size: array
-                int index = getLEXEMEInt(cdr(car(tree))); //get the index
-                LEXEME *set = evalGetArray(car(car(tree)), index, env);
-                // setCar(car(car(cdr(tree))), car(car(car(tree))));
-                setCar(car(car(cdr(tree))), set);
+                // int index = getLEXEMEInt(cdr(car(tree))); //get the index
+                // printf("THE index: %d\n", index);
+                // LEXEME *set = evalGetArray(car(car(tree)), index, env);
+                setCar(car(car(cdr(tree))), car(tree));
+                // setCar(car(car(cdr(tree))), set);
             }
             else setCar(car(car(cdr(tree))), car(car(tree))); //operator->left = variable
             // setCar(car(cdr(tree)), car(tree)); //operator->left = variable
@@ -302,6 +305,7 @@ getListSize(LEXEME *eargs) {
 
 extern LEXEME *
 evalFuncDef(LEXEME *tree, LEXEME *env) {
+    // printf("defining a function\n");
     LEXEME *closure = cons(CLOSURE, env, tree);
     return insert(car(car(tree)), env, closure);
 }
@@ -331,7 +335,7 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
     // if (r) return eval(r, xenv);
     // else return res;
     LEXEME *name = car(tree);
-    LEXEME *args = cdr(tree); //arglist, or null
+    LEXEME *args = cdr(tree); //paramList, or null
     // printf("got left and right of FUNCCALL\n");
     LEXEME *eargs;
     if (args) eargs = eval(args, env);
@@ -348,18 +352,27 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
         return evalBuiltin(name, eargs);
     }
     else {
+        // printf("not a builtin\n");
         LEXEME *params = cdr(car(cdr(closure))); //funcDef argList
+        // printf("params type: %s\neargs type: %s\n", getType(params), getType(eargs));
         LEXEME *body = car(cdr(cdr(closure))); //block
         LEXEME *r;
         if (cdr(cdr(cdr(closure)))) r = cdr(cdr(cdr(closure))); //returnStatement
         else r = NULL;
         LEXEME *senv = car(closure);
+        // printf("SENV: %s\n", getType(senv));
+        // display(senv);
+        // printf("\n");
         LEXEME *xenv = extend(params, eargs, senv);
-
+        // LEXEME *xenv = extend(eargs, params, senv);
+        // printf("XENV: %s\n", getType(xenv));
+        // display(xenv);
+        // printf("\n");
         // //insert a variable that points to xenv
         // insert(newLEXEMEString(VARIABLE, "this"), xenv, xenv);
 
         LEXEME *res = eval(body, xenv);
+        // printf("RES: %s\n", getType(res));
         if (r) return eval(r, xenv);
         else return res;
     }
@@ -474,6 +487,8 @@ evalForLoop(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalLambda(LEXEME *tree, LEXEME *env) {
+    // LEXEME *closure = cons(CLOSURE, env, tree);
+    // return insert(car(car(tree)), env, closure);
     return cons(CLOSURE, env, tree);
 }
 
@@ -481,7 +496,8 @@ extern LEXEME *
 evalSetArray(LEXEME *name, int index, LEXEME *new, LEXEME *env) {
     LEXEME *arr = eval(name, env);
     if (arr != NULL) {
-        if (index < getLEXEMEarraySize(name)) {
+        // printf("array size: %d\nindex: %d", getLEXEMEarraySize(arr), index);
+        if (index < getLEXEMEarraySize(arr)) {
             return setLEXEMEarray(arr, index, new);
         }
         else {
@@ -496,6 +512,24 @@ evalSetArray(LEXEME *name, int index, LEXEME *new, LEXEME *env) {
     // return NULL;
 }
 
+extern LEXEME *
+evalAssign(LEXEME *tree, LEXEME *env) {
+    // printf("in EVALASSIGN\n");
+    LEXEME *right = eval(cdr(tree), env);
+    // printf("RIGHT TYPE: %s\nLEFT TYPE: %s\n", getType(right), getType(car(tree)));
+    if (getType(car(tree)) == GLUE) { //updating an array
+        // printf("updating an array\n");
+        // LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+        // printf("index: %d\n", getLEXEMEInt(cdr(car(tree))));
+        LEXEME *a = evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), right, env);
+        return update(car(car(tree)), env, a);
+    }
+
+    else {
+        // printf("hello\n");
+        return update(car(tree), env, right);
+    }
+}
 
 
 /** OPERATOR EVALUATORS **/
@@ -582,60 +616,145 @@ extern LEXEME *
 evalPlus(LEXEME *tree, LEXEME *env) {
     // printf("in EVALPLUS\n");
     // printf("LEFT TYPE: %s\nRIGHT TYPE: %s\n", getType(car(tree)), getType(cdr(tree)));
-    LEXEME *left = eval(car(tree), env);
-    // printf("done with left. type: %s\n", getType(left));
-    LEXEME *right = eval(cdr(tree), env);
-    // printf("POST LEFT TYPE: %s\nPOST RIGHT TYPE: %s\n", getType(left), getType(right));
-    if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) + getLEXEMEInt(right));
-    else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) + getLEXEMEReal(right));
-    else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) + getLEXEMEInt(right));
-    else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) + getLEXEMEReal(right));
-    else if (getType(left) == STRING && getType(right) == STRING) return newLEXEMEString(STRING, strcat(getLEXEMEString(left), getLEXEMEString(right)));
+    if (getType(car(tree)) == GLUE) { //it's an array
+        LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+        LEXEME *right = eval(cdr(tree), env);
+        // printf("VAL TYPE: %s\nRIGHT TYPE: %s\n", getType(val), getType(right));
+        // if (getType(val) == INTEGER && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEInt(INTEGER, getLEXEMEInt(val) + getLEXEMEInt(right)), env);
+        if (getType(val) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(val) + getLEXEMEInt(right));
+        else if (getType(val) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(val) + getLEXEMEReal(right));
+        else if (getType(val) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEInt(right));
+        else if (getType(val) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEReal(right));
+        else if (getType(val) == STRING && getType(right) == STRING) return newLEXEMEString(STRING, strcat(getLEXEMEString(val), getLEXEMEString(right)));
+
+        // else if (getType(val) == REAL && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == INTEGER && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEInt(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == REAL && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEInt(right)), env);
+        // else if (getType(val) == STRING && getType(right) == STRING) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEString(STRING, strcat(getLEXEMEString(val),  getLEXEMEString(right))), env);
+        else {
+            printf("CAN ONLY ADD NUMBERS\nExit on line %d\n", getLEXEMEline(val));
+            exit(1);
+        }
+    }
     else {
-        printf("CANNOT ADD THESE on line %d\n", getLEXEMEline(left));
-        exit(1);
+        LEXEME *left = eval(car(tree), env);
+        // printf("done with left. type: %s\n", getType(left));
+        LEXEME *right = eval(cdr(tree), env);
+        // printf("POST LEFT TYPE: %s\nPOST RIGHT TYPE: %s\n", getType(left), getType(right));
+        if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) + getLEXEMEInt(right));
+        else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) + getLEXEMEReal(right));
+        else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) + getLEXEMEInt(right));
+        else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) + getLEXEMEReal(right));
+        else if (getType(left) == STRING && getType(right) == STRING) return newLEXEMEString(STRING, strcat(getLEXEMEString(left), getLEXEMEString(right)));
+        else {
+            printf("CANNOT ADD THESE on line %d\n", getLEXEMEline(left));
+            exit(1);
+        }
     }
 }
 
 extern LEXEME *
 evalMinus(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
-    LEXEME *right = eval(cdr(tree), env);
-    if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) - getLEXEMEInt(right));
-    else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) - getLEXEMEReal(right));
-    else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) - getLEXEMEInt(right));
-    else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) - getLEXEMEReal(right));
+    if (getType(car(tree)) == GLUE) { //it's an array
+        LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+        LEXEME *right = eval(cdr(tree), env);
+        // printf("VAL TYPE: %s\nRIGHT TYPE: %s\n", getType(val), getType(right));
+        // if (getType(val) == INTEGER && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEInt(INTEGER, getLEXEMEInt(val) + getLEXEMEInt(right)), env);
+        if (getType(val) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(val) - getLEXEMEInt(right));
+        else if (getType(val) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(val) - getLEXEMEReal(right));
+        else if (getType(val) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(val) - getLEXEMEInt(right));
+        else if (getType(val) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(val) - getLEXEMEReal(right));
+
+        // else if (getType(val) == REAL && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == INTEGER && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEInt(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == REAL && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEInt(right)), env);
+        // else if (getType(val) == STRING && getType(right) == STRING) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEString(STRING, strcat(getLEXEMEString(val),  getLEXEMEString(right))), env);
+        else {
+            printf("CAN ONLY ADD NUMBERS\nExit on line %d\n", getLEXEMEline(val));
+            exit(1);
+        }
+    }
     else {
-        printf("CAN ONLY SUBTRACT NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
-        exit(1);
+        LEXEME *left = eval(car(tree), env);
+        LEXEME *right = eval(cdr(tree), env);
+        if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) - getLEXEMEInt(right));
+        else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) - getLEXEMEReal(right));
+        else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) - getLEXEMEInt(right));
+        else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) - getLEXEMEReal(right));
+        else {
+            printf("CAN ONLY SUBTRACT NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
+            exit(1);
+        }
     }
 }
 
 extern LEXEME *
 evalTimes(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
-    LEXEME *right = eval(cdr(tree), env);
-    if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) * getLEXEMEInt(right));
-    else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) * getLEXEMEReal(right));
-    else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) * getLEXEMEInt(right));
-    else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) * getLEXEMEReal(right));
+    if (getType(car(tree)) == GLUE) { //it's an array
+        LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+        LEXEME *right = eval(cdr(tree), env);
+        // printf("VAL TYPE: %s\nRIGHT TYPE: %s\n", getType(val), getType(right));
+        // if (getType(val) == INTEGER && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEInt(INTEGER, getLEXEMEInt(val) + getLEXEMEInt(right)), env);
+        if (getType(val) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(val) * getLEXEMEInt(right));
+        else if (getType(val) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(val) * getLEXEMEReal(right));
+        else if (getType(val) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(val) * getLEXEMEInt(right));
+        else if (getType(val) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(val) * getLEXEMEReal(right));
+
+        // else if (getType(val) == REAL && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == INTEGER && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEInt(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == REAL && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEInt(right)), env);
+        // else if (getType(val) == STRING && getType(right) == STRING) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEString(STRING, strcat(getLEXEMEString(val),  getLEXEMEString(right))), env);
+        else {
+            printf("CAN ONLY ADD NUMBERS\nExit on line %d\n", getLEXEMEline(val));
+            exit(1);
+        }
+    }
     else {
-        printf("CAN ONLY MULTIPLY NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
-        exit(1);
+        LEXEME *left = eval(car(tree), env);
+        LEXEME *right = eval(cdr(tree), env);
+        if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) * getLEXEMEInt(right));
+        else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) * getLEXEMEReal(right));
+        else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) * getLEXEMEInt(right));
+        else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) * getLEXEMEReal(right));
+        else {
+            printf("CAN ONLY MULTIPLY NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
+            exit(1);
+        }
     }
 }
 
 extern LEXEME *
 evalDivide(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
-    LEXEME *right = eval(cdr(tree), env);
-    if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) / getLEXEMEInt(right));
-    else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) / getLEXEMEReal(right));
-    else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) / getLEXEMEInt(right));
-    else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) / getLEXEMEReal(right));
+    if (getType(car(tree)) == GLUE) { //it's an array
+        LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+        LEXEME *right = eval(cdr(tree), env);
+        // printf("VAL TYPE: %s\nRIGHT TYPE: %s\n", getType(val), getType(right));
+        // if (getType(val) == INTEGER && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEInt(INTEGER, getLEXEMEInt(val) + getLEXEMEInt(right)), env);
+        if (getType(val) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(val) / getLEXEMEInt(right));
+        else if (getType(val) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(val) / getLEXEMEReal(right));
+        else if (getType(val) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(val) / getLEXEMEInt(right));
+        else if (getType(val) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(val) / getLEXEMEReal(right));
+
+        // else if (getType(val) == REAL && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == INTEGER && getType(right) == REAL) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEInt(val) + getLEXEMEReal(right)), env);
+        // else if (getType(val) == REAL && getType(right) == INTEGER) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEReal(REAL, getLEXEMEReal(val) + getLEXEMEInt(right)), env);
+        // else if (getType(val) == STRING && getType(right) == STRING) return evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), newLEXEMEString(STRING, strcat(getLEXEMEString(val),  getLEXEMEString(right))), env);
+        else {
+            printf("CAN ONLY ADD NUMBERS\nExit on line %d\n", getLEXEMEline(val));
+            exit(1);
+        }
+    }
     else {
-        printf("CAN ONLY DIVIDE NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
-        exit(1);
+        LEXEME *left = eval(car(tree), env);
+        LEXEME *right = eval(cdr(tree), env);
+        if (getType(left) == INTEGER && getType(right) == INTEGER) return newLEXEMEInt(INTEGER, getLEXEMEInt(left) / getLEXEMEInt(right));
+        else if (getType(left) == INTEGER && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEInt(left) / getLEXEMEReal(right));
+        else if (getType(left) == REAL && getType(right) == INTEGER) return newLEXEMEReal(REAL, getLEXEMEReal(left) / getLEXEMEInt(right));
+        else if (getType(left) == REAL && getType(right) == REAL) return newLEXEMEReal(REAL, getLEXEMEReal(left) / getLEXEMEReal(right));
+        else {
+            printf("CAN ONLY DIVIDE NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
+            exit(1);
+        }
     }
 }
 
@@ -932,7 +1051,11 @@ evalOrOr(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalPlusEquals(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
+    LEXEME *left;
+    if (getType(car(tree)) == GLUE) { //it's an array
+        left = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+    }
+    else left = eval(car(tree), env);
     LEXEME *right = eval(cdr(tree), env);
     LEXEME *result;
     if (getType(left) == INTEGER && getType(right) == INTEGER) {
@@ -963,7 +1086,11 @@ evalPlusEquals(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalMinusEquals(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
+    LEXEME *left;
+    if (getType(car(tree)) == GLUE) { //it's an array
+        left = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+    }
+    else left = eval(car(tree), env);
     LEXEME *right = eval(cdr(tree), env);
     LEXEME *result;
     if (getType(left) == INTEGER && getType(right) == INTEGER) {
@@ -994,7 +1121,11 @@ evalMinusEquals(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalTimesEquals(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
+    LEXEME *left;
+    if (getType(car(tree)) == GLUE) { //it's an array
+        left = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+    }
+    else left = eval(car(tree), env);
     LEXEME *right = eval(cdr(tree), env);
     LEXEME *result;
     if (getType(left) == INTEGER && getType(right) == INTEGER) {
@@ -1025,7 +1156,11 @@ evalTimesEquals(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalDivideEquals(LEXEME *tree, LEXEME *env) {
-    LEXEME *left = eval(car(tree), env);
+    LEXEME *left;
+    if (getType(car(tree)) == GLUE) { //it's an array
+        left = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
+    }
+    else left = eval(car(tree), env);
     LEXEME *right = eval(cdr(tree), env);
     LEXEME *result;
     if (getType(left) == INTEGER && getType(right) == INTEGER) {
@@ -1052,19 +1187,6 @@ evalDivideEquals(LEXEME *tree, LEXEME *env) {
         printf("CAN ONLY MULTIPLY NUMBERS\nFatal on line %d\n", getLEXEMEline(left));
         exit(1);
     }
-}
-
-extern LEXEME *
-evalAssign(LEXEME *tree, LEXEME *env) {
-    printf("in EVALASSIGN\n");
-    LEXEME *right = eval(cdr(tree), env);
-    printf("RIGHT TYPE: %s\n", getType(right));
-    if (getType(car(tree)) == GLUE) { //updating an array
-        // LEXEME *val = evalGetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), env);
-        LEXEME *a = evalSetArray(car(car(tree)), getLEXEMEInt(cdr(car(tree))), right, env);
-        return update(car(car(tree)), env, a);
-    }
-    else return update(car(tree), env, right);
 }
 
 // extern LEXEME *

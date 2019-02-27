@@ -17,6 +17,7 @@ extern void printIncludes(LEXEME *);
 extern void printInclude(LEXEME *);
 extern void printMain(LEXEME *);
 extern void printArgList(LEXEME *);
+extern void printParamList(LEXEME *);
 extern void printBlock(LEXEME *);
 extern void printStatements(LEXEME *);
 extern void printStatement(LEXEME *);

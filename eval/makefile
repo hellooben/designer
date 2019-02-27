@@ -46,6 +46,30 @@ error5 : print #semantic error: array items not of same type
 
 error5x : eval
 	./eval e5.txt
+
+arrays : print #works
+	./pp arrays.txt
+
+arraysx : eval #works
+	./eval arrays.txt
+
+conditionals : print #works
+	./pp conditionals.txt
+
+conditionalsx : eval #works
+	./eval conditionals.txt
+
+function : print #works
+	./pp function.txt
+
+functionx : eval #works
+	./eval function.txt
+
+anonymous : print
+	./pp lambda.txt
+
+anonymousx : eval
+	./eval lambda.txt
 #
 # test1 : print
 # 	@echo Original file:

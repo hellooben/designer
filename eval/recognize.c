@@ -191,6 +191,18 @@ argList() {
 }
 
 extern LEXEME *
+paramList() {
+    LEXEME *v, *p;
+    v = match(VARIABLE);
+    if (check(COMMA)) {
+        match(COMMA);
+        p = paramList();
+    }
+    else p = NULL;
+    return cons(PARAMLIST, v, p);
+}
+
+extern LEXEME *
 block() {
     LEXEME *s;
     match(OBRACE);
@@ -280,7 +292,8 @@ expression() {
             match(CBRACKET);
             if (i != NULL && operatorPending()) {
                 o = operator();
-                e = expression();
+                if (expressionPending() || unaryPending()) e = expression();
+                else e = NULL;
             }
             else {
                 o = NULL;
@@ -484,11 +497,14 @@ funcDef() {
     match(METHOD);
     name = match(VARIABLE);
     match(OPAREN);
-    if (optArgListPending()) {
-        arg = argList();
+    // if (optArgListPending()) {
+    if (check(VARIABLE)) {
+        // arg = argList();
+        arg = paramList();
     }
     else arg = NULL;
     match(CPAREN);
+    // printf("gonna do the block in funcdef\n");
     b = block();
     if (returnPending()) {
         r = returnStatement();
@@ -620,7 +636,7 @@ statementPending() {
 
 extern int
 expressionPending() {
-    return check(VARIABLE);
+    return check(VARIABLE) || check(LAMBDA);
 }
 
 extern int

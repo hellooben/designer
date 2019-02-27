@@ -1,0 +1,22 @@
+main() {
+    var x = 4!
+    var string = "hello"!
+
+    var list[1, 2, 3, 4, 5, 10]!
+    list[0] = 99!
+    var m = list[0]!
+
+
+    print(m)!
+    print()!
+
+    print(list[0] + list[5])!
+    print()!
+
+
+    var other[1, 2, 3]!
+    other[0] = 99*2!
+
+    print(other[0]/2)!
+    print()!
+}

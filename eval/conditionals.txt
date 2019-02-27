@@ -1,0 +1,15 @@
+main() {
+    var x = 10!
+    if (x < 5) {
+        print(x)!
+    }
+    else if (x == 10) {
+        print(x)!
+        print(" is ten")!
+        print()!
+    }
+    else {
+        print("its big")!
+        print()!
+    }!
+}

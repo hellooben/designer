@@ -63,6 +63,7 @@ pp(LEXEME *tree) {
     else if (getType(tree) == INCLUDE) printInclude(tree);
     else if (getType(tree) == MAINMETHOD) printMain(tree);
     else if (getType(tree) == ARGLIST) printArgList(tree);
+    else if (getType(tree) == PARAMLIST) printParamList(tree);
     else if (getType(tree) == BLOCK) printBlock(tree);
     else if (getType(tree) == STATEMENTS) printStatements(tree);
     else if (getType(tree) == STATEMENT) printStatement(tree);
@@ -136,6 +137,15 @@ printArgList(LEXEME *l) {
     if (cdr(l)) {
         printf(",");
         pp(cdr(l)); //argList
+    }
+}
+
+extern void
+printParamList(LEXEME *l) {
+    pp(car(l)); //variable
+    if (cdr(l)) {
+        printf(",");
+        pp(cdr(l));
     }
 }
 
@@ -277,7 +287,7 @@ printFuncDef(LEXEME *l) {
     printf("method ");
     pp(car(car(l))); //function name
     printf("(");
-    if (cdr(car(l))) pp(cdr(car(l)));
+    if (cdr(car(l))) pp(cdr(car(l))); //paramList
     printf(")");
     pp(car(cdr(l))); //block
     if (cdr(cdr(l))) pp(cdr(cdr(l))); //returnStatement
