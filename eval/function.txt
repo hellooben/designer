@@ -1,17 +1,29 @@
 main() {
     method add(x, y) {
-        var n = x * y!
-        print("n: ")!
-        print(n)!
-        print()!
-        var m =  x + y + n!
-        print("m: ")!
-        print(m)!
-        print()!
-        return m!
+        return x + y!
+
     }!
 
-    var sum = add(2, 50)!
+    method biggest(a, b) {
+        if (a > b) {
+            return a!
+        }
+        else {
+            return b!
+        }!
+    }!
+
+    method thousand(num) {
+        return add(1000, num)!
+    }!
+
+    var v = 20!
+    var v1 = 10!
+    var sum = add(biggest(v, v1), 50)!
     print(sum)!
+    print()!
+
+    var big = thousand(234)!
+    print(big)!
     print()!
 }

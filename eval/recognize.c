@@ -387,7 +387,7 @@ lambda() {
     LEXEME *arg, *b;
     match(LAMBDA);
     match(OPAREN);
-    if (optArgListPending()) arg = argList();
+    if (optArgListPending()) arg = paramList();
     else arg = NULL;
     match(CPAREN);
     b = block();

@@ -344,7 +344,7 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
     LEXEME *closure = eval(name, env);
     // printf("TYPE OF CLOSURE: %s\n", getType(closure));
     if (closure == NULL) {
-            printf("THIS FUNCTION DOES NOT EXIST\nFatal on line %d\n", getLEXEMEline(tree));
+            // printf("THIS FUNCTION DOES NOT EXIST\nFatal on line %d\n", getLEXEMEline(tree));
             exit(1);
     }
     else if (getType(closure) == BUILTIN) {
@@ -352,13 +352,27 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
         return evalBuiltin(name, eargs);
     }
     else {
-        // printf("not a builtin\n");
-        LEXEME *params = cdr(car(cdr(closure))); //funcDef argList
-        // printf("params type: %s\neargs type: %s\n", getType(params), getType(eargs));
-        LEXEME *body = car(cdr(cdr(closure))); //block
+        // printf("not a builtin\nTYPE RIGHT: %s\n", getType(cdr(closure)));
+        LEXEME *params;
+        LEXEME *body;
         LEXEME *r;
-        if (cdr(cdr(cdr(closure)))) r = cdr(cdr(cdr(closure))); //returnStatement
-        else r = NULL;
+        // LEXEME *senv;
+        // LEXEME *xenv;
+        if (getType(cdr(closure)) == LAMBDA) {
+            params = car(cdr(cdr(closure))); //lambda paramList
+            body = cdr(cdr(cdr(closure)));
+            r = NULL;
+        }
+        else {
+            params = cdr(car(cdr(closure))); //funcDef paramList
+            body = car(cdr(cdr(closure))); //block
+            if (cdr(cdr(cdr(closure)))) r = cdr(cdr(cdr(closure))); //returnStatement
+            else r = NULL;
+            // senv = car(closure);
+            // xenv = extend(params, eargs, senv);
+        }
+        // printf("params type: %s\neargs type: %s\n", getType(params), getType(eargs));
+
         LEXEME *senv = car(closure);
         // printf("SENV: %s\n", getType(senv));
         // display(senv);
@@ -488,6 +502,7 @@ evalForLoop(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalLambda(LEXEME *tree, LEXEME *env) {
+    // printf("in EVALLAMBDA\n");
     // LEXEME *closure = cons(CLOSURE, env, tree);
     // return insert(car(car(tree)), env, closure);
     return cons(CLOSURE, env, tree);

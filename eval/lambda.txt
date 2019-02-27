@@ -7,5 +7,9 @@ main() {
     var v = f(11)!
 
     print(a(5))!
+    print()!
     print(v(6))!
+    print()!
+    print(a(10))!
+    print()!
 }

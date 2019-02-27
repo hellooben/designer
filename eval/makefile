@@ -10,9 +10,6 @@ eval :
 	gcc $(OPTS) -c driver.c eval.c recognize.c lexing.c environment.c pretty.c types.c
 	gcc $(OPTS) types.o pretty.o environment.o lexing.o recognize.o eval.o driver.o -o eval
 
-# pp :
-# 	gcc $(OPTS) -c print.c pp.c recognize.c lexing.c types.c
-# 	gcc $(OPTS) types.o lexing.o recognize.o pp.o print.o -o pp
 print :
 	gcc $(OPTS) -c print.c pretty.c recognize.c environment.c lexing.c types.c
 	gcc $(OPTS) types.o lexing.o environment.o recognize.o pretty.o print.o -o pp
@@ -59,16 +56,16 @@ conditionals : print #works
 conditionalsx : eval #works
 	./eval conditionals.txt
 
-function : print #works
+functions : print #works
 	./pp function.txt
 
-functionx : eval #works
+functionsx : eval #works
 	./eval function.txt
 
-anonymous : print
+lambda : print #works
 	./pp lambda.txt
 
-anonymousx : eval
+lambdax : eval #works
 	./eval lambda.txt
 #
 # test1 : print
