@@ -62,10 +62,16 @@ functions : print #works
 functionsx : eval #works
 	./eval function.txt
 
+recursion : print
+	./pp recursion.txt
+
+recursionx : eval
+	./eval recursion.txt
+
 iteration : print #works
 	./pp iteration.txt
 
-iterationx : eval #works 
+iterationx : eval #works
 	./eval iteration.txt
 
 lambda : print #works

@@ -1,0 +1,17 @@
+main() {
+    method r(x) {
+        if (x == 1) {
+            return x!
+        }
+        else {
+            return x + r(x-1)!
+        }!
+    }!
+
+    var v1 = r(5)!
+    print(v1)!
+    print()!
+    var v2 = r(299)!
+    print(v2)!
+    print()!
+}
