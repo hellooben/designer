@@ -3,8 +3,8 @@
 
 The final installment of our DPL is the Evaluator, which traverses the parse tree and actually executes the program.<br><br>
 
-###BEAN: Language Specifics
-A C-based language, with some small differences.<br><br>
+### BEAN: Language Specifics
+A C-based language, with some small differences.<br>
 - Everything is run through the main function
 - End statements with a '!'
 - Comments begin and end with a '?'
@@ -13,9 +13,9 @@ A C-based language, with some small differences.<br><br>
 - Function definition: `method MMM(?arguments?) {?block?}!`, where `MMM` is the name of the function being defined
 - Function calls: `MMM(?arguments?)!`, where `MMM` is the name of the function being called
 - If statements, For loops, and While loops all end with an '!'
-<br><br>
+<br>
 
-There are Built-In functions:<br><br>
+There are Built-In functions:<br>
 - `print(UNARY)`: takes a variable, string, integer, or real and prints it to the command line; if no argument is passed, prints a newline
 - `printNewLine()`: takes no arguments; prints a newline
 - `openFileForReading(STRING)`: takes a string argument that is the name of a file, opens it, and returns a FP (FILEPOINTER) type
