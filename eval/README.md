@@ -27,7 +27,7 @@ The final installment of our DPL is the Evaluator, which traverses the parse tre
 - `getArg(INT)`: takes an integer argument that would be the index of the command line argument desired, returns a UNARY that was passed (if it exists)
 <br>
 
-#### Running Programs: The Makefile
+#### Running Programs
 A Makefile is provided with plenty of tests. They are outlined below.
 - `make`: compiles the BEAN evaluator
 - `error1`: prints the file e1.bean, demonstrates a syntax error (missing "!")
@@ -45,7 +45,7 @@ A Makefile is provided with plenty of tests. They are outlined below.
 - `conditionals`: prints the file conditionals.bean
 - `conditionalsx`: compiles and executes conditionals.bean
 - `functions`: prints the file function.bean
-- `functionsx`: compiles and executes function.bean
+- `functionsx`: compiles and executes function.bean; examples include passing functions to function calls and also returning nested functions
 - `recursion`: prints the file recursion.bean
 - `recursionx`: compiles and executes recursion.bean
 - `iteration`: prints the file iteration.bean
@@ -54,3 +54,5 @@ A Makefile is provided with plenty of tests. They are outlined below.
 - `lambdax`: compiles and executes lambda.bean
 - `problem`: prints the file problem.bean
 - `problemx`: compiles and executes problem.bean, which reads the file numbers.txt and prints the sum of all numbers found in the file
+<br>
+If you want to run your own tests, you can! Simply write your program, run the `make` command to compile everything, and then run `run FFFF.bean <additional>`, where `FFFF` is the name of the .bean file, and `<additional>` are any additional command line arguments you wish to pass.
