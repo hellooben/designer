@@ -62,6 +62,12 @@ functions : print #works
 functionsx : eval #works
 	./eval function.txt
 
+iteration : print #works
+	./pp iteration.txt
+
+iterationx : eval #works 
+	./eval iteration.txt
+
 lambda : print #works
 	./pp lambda.txt
 

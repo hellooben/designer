@@ -493,7 +493,8 @@ evalForLoop(LEXEME *tree, LEXEME *env) {
     eval(car(car(tree)), fenv); //varDef
     LEXEME *fc = eval(car(cdr(car(tree))), fenv); //forCheck aka expression
     while (getLEXEMEInt(fc)) {
-        eval(cdr(tree), env); //block
+        // printf("%d", getLEXEMEInt(fc));
+        eval(cdr(tree), fenv); //block
         eval(cdr(cdr(car(tree))), fenv); //forOp aka expression
         fc = eval(car(cdr(car(tree))), fenv); //forCheck aka expression
     }
@@ -814,9 +815,12 @@ evalGreaterThan(LEXEME *tree, LEXEME *env) {
 
 extern LEXEME *
 evalLessThan(LEXEME *tree, LEXEME *env) {
+    // printf("in EVALLESSTHAN\n");
     LEXEME *left = eval(car(tree), env);
     LEXEME *right = eval(cdr(tree), env);
+    // printf("RIGHT: %s\nLEFT: %s\n", getType(left), getType(right));
     if (getType(left) == INTEGER && getType(right) == INTEGER) {
+        // printf("%d ||| %d\n", getLEXEMEInt(left), getLEXEMEInt(right));
         if (getLEXEMEInt(left) < getLEXEMEInt(right)) {
             return newLEXEMEInt(BOOLEAN, 1);
         }
