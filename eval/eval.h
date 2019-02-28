@@ -10,6 +10,9 @@ eval.h
 #include "types.h"
 #include "recognize.h"
 
+int countCL;
+char **argsCL;
+
 extern LEXEME *eval(LEXEME *, LEXEME *);
 
 // extern LEXEME *evalSimpleOp(LEXEME *, LEXEME *);
@@ -72,6 +75,8 @@ extern LEXEME *evalOpenFile(LEXEME *);
 extern LEXEME *evalReadInteger(LEXEME *);
 extern LEXEME *evalAtFileEnd(LEXEME *);
 extern LEXEME *evalCloseFile(LEXEME *);
+extern LEXEME *evalGetArg(LEXEME *);
+extern LEXEME *evalGetArgCount(LEXEME *);
 
 
 extern LEXEME *evalReturn(LEXEME *, LEXEME *);

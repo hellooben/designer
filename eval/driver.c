@@ -13,13 +13,18 @@ driver.c
 #include "recognize.h"
 #include "pretty.h"
 
-int main(int argc, char **argv) {
-    if (argc != 2) {
-        printf("Incorrect arguments. Exiting...\n");
-        return 1;
-    }
+int countCL;
+char **argsCL;
 
-    FILE *fp = fopen(argv[argc-1], "r");
+int main(int argc, char **argv) {
+    countCL = argc;
+    argsCL = argv;
+    // if (argc != 2) {
+    //     printf("Incorrect arguments. Exiting...\n");
+    //     return 1;
+    // }
+
+    FILE *fp = fopen(argv[1], "r");
 
     LEXEME *tree = parse(fp);
 
@@ -33,10 +38,12 @@ int main(int argc, char **argv) {
     insert(newLEXEMEString(VARIABLE, "readInteger"), env, newLEXEMEBuiltin(evalReadInteger));
     insert(newLEXEMEString(VARIABLE, "atFileEnd"), env, newLEXEMEBuiltin(evalAtFileEnd));
     insert(newLEXEMEString(VARIABLE, "closeFile"), env, newLEXEMEBuiltin(evalCloseFile));
+    insert(newLEXEMEString(VARIABLE, "getArgCount"), env, newLEXEMEBuiltin(evalGetArgCount));
+    insert(newLEXEMEString(VARIABLE, "getArg"), env, newLEXEMEBuiltin(evalGetArg));
 
     // printf("Inserted builtin functions\n");
     eval(tree, env);
-    printf("\n");
+    // printf("\n");
 
     // if (e) printf("hello\n");
 }

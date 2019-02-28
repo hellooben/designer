@@ -415,6 +415,12 @@ evalBuiltin(LEXEME *name, LEXEME *eargs) {
     else if (strcmp(getLEXEMEString(name), "closeFile") == 0) {
         return evalCloseFile(eargs);
     }
+    else if (strcmp(getLEXEMEString(name), "getArgCount") == 0) {
+        return evalGetArgCount(eargs);
+    }
+    else if (strcmp(getLEXEMEString(name), "getArg") == 0) {
+        return evalGetArg(eargs);
+    }
     else return NULL;
 }
 
@@ -504,6 +510,29 @@ evalCloseFile(LEXEME *eargs) {
     FILE *file = getLEXEMEfile(car(car(car(eargs))));
     fclose(file);
     return newLEXEMEInt(BOOLEAN, 1);
+}
+
+extern LEXEME *
+evalGetArgCount(LEXEME *eargs) {
+    if (eargs == NULL) return newLEXEMEInt(INTEGER, countCL);
+    else {
+        printf("GETARGCOUNT TAKES NO ARGUMENTS\nFatal BUILTIN error.\n");
+        return NULL;
+    }
+}
+
+extern LEXEME *
+evalGetArg(LEXEME *eargs) {
+    if (getType(car(car(car(eargs)))) != INTEGER) {
+        printf("ARGUMENT MUST BE AN INTEGER\nFatal on line %d\n", getLEXEMEline(car(car(car(eargs)))));
+        exit(-1);
+    }
+    int index = getLEXEMEInt(car(car(car(eargs))));
+    if (index + 2 >= countCL) {
+        printf("OUT OF RANGE - only %d argument(s)\nFatal GETARG error\n", countCL-2);
+        exit(-1);
+    }
+    return newLEXEMEString(STRING, argsCL[index+2]);
 }
 
 extern LEXEME *

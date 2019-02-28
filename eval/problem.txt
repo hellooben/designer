@@ -1,5 +1,14 @@
 main() {
-    var file = openFileForReading("numbers.txt")!
+    var count = getArgCount()!
+    print("Arg count: ")!
+    print(count)!
+    print()!
+    var command = getArg(0)!
+    print("Passed command: ")!
+    print(command)!
+    print()!
+
+    var file = openFileForReading(command)!
     var int = readInteger(file)!
 
     var end = atFileEnd(file)!

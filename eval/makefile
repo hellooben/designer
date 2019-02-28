@@ -80,11 +80,11 @@ lambda : print #works
 lambdax : eval #works
 	./eval lambda.txt
 
-file : print #works
-	./pp file.txt
+problem : print #works
+	./pp problem.txt
 
-filex : eval #works 
-	./eval file.txt
+problemx : eval #works
+	./eval problem.txt numbers.txt
 #
 # test1 : print
 # 	@echo Original file:
