@@ -17,18 +17,24 @@ print :
 	gcc $(OPTS) types.o lexing.o environment.o recognize.o pretty.o print.o -o pp
 
 error1 : print #syntax error: missing "!"
+	@echo error1 contents:
+	@cat e1.bean
 	./pp e1.bean
 
 error1x : eval
 	./bean e1.bean
 
 error2 : print #syntax error: unexpected character
+	@echo error2 contents:
+	@cat e2.bean
 	./pp e2.bean
 
 error2x : eval
 	./bean e2.bean
 
 error3 : print #syntax error: typed variable definition
+	@echo error3 contents:
+	@cat e3.bean
 	./pp e3.bean
 
 error3x : bean

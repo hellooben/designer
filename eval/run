@@ -1,2 +1,2 @@
 #!/bin/bash
-./bean $1
+./bean $*
