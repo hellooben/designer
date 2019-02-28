@@ -3,7 +3,7 @@
 
 The final installment of our DPL is the Evaluator, which traverses the parse tree and actually executes the program.<br><br>
 
-### BEAN: Language Specifics
+#### BEAN: Language Specifics
 A C-based language, with some small differences.<br>
 - Everything is run through the main function
 - End statements with a '!'
