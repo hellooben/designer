@@ -99,3 +99,4 @@ char *JOIN = "JOIN";
 char *ENV = "ENV";
 char *TABLE = "TABLE";
 char *VALUES = "VALUES";
+char *FP = "FILEPOINTER";

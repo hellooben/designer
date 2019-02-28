@@ -29,6 +29,11 @@ int main(int argc, char **argv) {
     // printf("Environment created\n");
     insert(newLEXEMEString(VARIABLE, "print"), env, newLEXEMEBuiltin(evalPrint));
     insert(newLEXEMEString(VARIABLE, "printNewLine"), env, newLEXEMEBuiltin(evalPrintNewLine));
+    insert(newLEXEMEString(VARIABLE, "openFileForReading"), env, newLEXEMEBuiltin(evalOpenFile));
+    insert(newLEXEMEString(VARIABLE, "readInteger"), env, newLEXEMEBuiltin(evalReadInteger));
+    insert(newLEXEMEString(VARIABLE, "atFileEnd"), env, newLEXEMEBuiltin(evalAtFileEnd));
+    insert(newLEXEMEString(VARIABLE, "closeFile"), env, newLEXEMEBuiltin(evalCloseFile));
+
     // printf("Inserted builtin functions\n");
     eval(tree, env);
     printf("\n");

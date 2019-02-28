@@ -1,0 +1,22 @@
+main() {
+    var file = openFileForReading("numbers.txt")!
+    var int = readInteger(file)!
+
+    var end = atFileEnd(file)!
+
+
+    var sum = 0!
+
+    while (end == 0) {
+        sum += int!
+
+        int = readInteger(file)!
+
+        end = atFileEnd(file)!
+    }!
+
+    print("sum: ")!
+    print(sum)!
+    print()!
+    closeFile(file)!
+}

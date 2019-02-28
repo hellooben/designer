@@ -99,5 +99,6 @@ extern char *JOIN;
 extern char *ENV;
 extern char *TABLE;
 extern char *VALUES;
+extern char *FP;
 
 #endif

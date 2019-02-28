@@ -68,6 +68,10 @@ extern LEXEME *evalSetArray(LEXEME *, int, LEXEME *, LEXEME *);
 extern LEXEME *evalBuiltin(LEXEME *, LEXEME *);
 extern LEXEME *evalPrint(LEXEME *);
 extern LEXEME *evalPrintNewLine(LEXEME *);
+extern LEXEME *evalOpenFile(LEXEME *);
+extern LEXEME *evalReadInteger(LEXEME *);
+extern LEXEME *evalAtFileEnd(LEXEME *);
+extern LEXEME *evalCloseFile(LEXEME *);
 
 
 extern LEXEME *evalReturn(LEXEME *, LEXEME *);

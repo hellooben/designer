@@ -26,6 +26,8 @@ extern int getLEXEMEInt(LEXEME *);
 extern double getLEXEMEReal(LEXEME *);
 extern char *getLEXEMEString(LEXEME *);
 extern int getLEXEMEline(LEXEME *);
+extern void setLEXEMEfile(LEXEME *, char *);
+extern FILE *getLEXEMEfile(LEXEME *);
 extern void displayLEXEME(LEXEME *);
 
 extern void setLEXEMEright(LEXEME *, LEXEME *);

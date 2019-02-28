@@ -62,10 +62,10 @@ functions : print #works
 functionsx : eval #works
 	./eval function.txt
 
-recursion : print
+recursion : print #works
 	./pp recursion.txt
 
-recursionx : eval
+recursionx : eval #works
 	./eval recursion.txt
 
 iteration : print #works
@@ -79,6 +79,12 @@ lambda : print #works
 
 lambdax : eval #works
 	./eval lambda.txt
+
+file : print #works
+	./pp file.txt
+
+filex : eval #works 
+	./eval file.txt
 #
 # test1 : print
 # 	@echo Original file:

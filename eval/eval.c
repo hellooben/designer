@@ -403,6 +403,18 @@ evalBuiltin(LEXEME *name, LEXEME *eargs) {
     else if (strcmp(getLEXEMEString(name), "printNewLine") == 0) {
         return evalPrintNewLine(eargs);
     }
+    else if (strcmp(getLEXEMEString(name), "openFileForReading") == 0) {
+        return evalOpenFile(eargs);
+    }
+    else if (strcmp(getLEXEMEString(name), "readInteger") == 0) {
+        return evalReadInteger(eargs);
+    }
+    else if (strcmp(getLEXEMEString(name), "atFileEnd") == 0) {
+        return evalAtFileEnd(eargs);
+    }
+    else if (strcmp(getLEXEMEString(name), "closeFile") == 0) {
+        return evalCloseFile(eargs);
+    }
     else return NULL;
 }
 
@@ -443,6 +455,55 @@ evalPrintNewLine(LEXEME *eargs) {
         exit(1);
     }
     return NULL;
+}
+
+extern LEXEME *
+evalOpenFile(LEXEME *eargs) {
+    // printf("in EVALOPENFILE\n");
+    if (getType(car(car(car(eargs)))) != STRING) {
+        printf("ARGUMENT MUST BE A STRING\nFatal on line %d\n", getLEXEMEline(car(car(car(eargs)))));
+        exit(-1);
+    }
+    char *fileName = getLEXEMEString(car(car(car(eargs))));
+    LEXEME *fp = newLEXEME(FP);
+    setLEXEMEfile(fp, fileName);
+    return fp;
+}
+
+extern LEXEME *
+evalReadInteger(LEXEME *eargs) {
+    // printf("in EVALREADINTEGER\n");
+    if (getType(car(car(car(eargs)))) != FP) {
+        printf("ARGUMENT MUST BE A FILE\nFatal on line %d\n", getLEXEMEline(car(car(car(eargs)))));
+        exit(-1);
+    }
+    FILE *file = getLEXEMEfile(car(car(car(eargs))));
+    int num = 0;
+    fscanf(file, "%d", &num);
+    return newLEXEMEInt(INTEGER, num);
+    // return lexNumber(file);
+}
+
+extern LEXEME *
+evalAtFileEnd(LEXEME *eargs) {
+    if (getType(car(car(car(eargs)))) != FP) {
+        printf("ARGUMENT MUST BE A FILE\nFatal on line %d\n", getLEXEMEline(car(car(car(eargs)))));
+        exit(-1);
+    }
+    FILE *file = getLEXEMEfile(car(car(car(eargs))));
+    if (feof(file)) return newLEXEMEInt(INTEGER, 1);
+    else return newLEXEMEInt(INTEGER, 0);
+}
+
+extern LEXEME *
+evalCloseFile(LEXEME *eargs) {
+    if (getType(car(car(car(eargs)))) != FP) {
+        printf("ARGUMENT MUST BE A FILE\nFatal on line %d\n", getLEXEMEline(car(car(car(eargs)))));
+        exit(-1);
+    }
+    FILE *file = getLEXEMEfile(car(car(car(eargs))));
+    fclose(file);
+    return newLEXEMEInt(BOOLEAN, 1);
 }
 
 extern LEXEME *

@@ -29,6 +29,7 @@ struct lexeme {
     //array value
     LEXEME **aval;
     int arraySize;
+    FILE *file;
 
     LEXEME *left;
     LEXEME *right;
@@ -47,6 +48,7 @@ newLEXEME(char *type) {
     l->fval = getLEXEMEleft;
     l->arraySize = 0;
     l->aval = malloc(sizeof(LEXEME *));
+    l->file = NULL;
     l->left = l;
     l->right = l;
     return l;
@@ -80,6 +82,7 @@ newLEXEMEInt(char *type, int intVal) {
     l->fval = getLEXEMEleft;
     l->arraySize = 0;
     l->aval = malloc(sizeof(LEXEME *));
+    l->file = NULL;
     l->left = l;
     l->right = l;
     return l;
@@ -98,6 +101,7 @@ newLEXEMEReal(char *type, double realVal) {
     l->fval = getLEXEMEleft;
     l->arraySize = 0;
     l->aval = malloc(sizeof(LEXEME *));
+    l->file = NULL;
     l->left = l;
     l->right = l;
     return l;
@@ -116,6 +120,7 @@ newLEXEMEString(char *type, char *stringVal) {
     l->fval = getLEXEMEleft;
     l->arraySize = 0;
     l->aval = malloc(sizeof(LEXEME *));
+    l->file = NULL;
     l->left = l;
     l->right = l;
     return l;
@@ -133,6 +138,7 @@ newLEXEMEBuiltin(LEXEME *(*f)(LEXEME *)) {
     l->fval = f;
     l->arraySize = 0;
     l->aval = malloc(sizeof(LEXEME *));
+    l->file = NULL;
     l->left = l;
     l->right = l;
     return l;
@@ -150,6 +156,7 @@ newLEXEMEArray(char *type, int size, char *name) {
     l->fval = getLEXEMEleft;
     l->arraySize = size;
     l->aval = malloc(sizeof(LEXEME *) * size);
+    l->file = NULL;
     l->left = l;
     l->right = l;
     return l;
@@ -199,6 +206,18 @@ getLEXEMEarrayVal(LEXEME *l, int index) {
     LEXEME **array = getLEXEMEarray(l);
     if (index >= getLEXEMEarraySize(l)) return NULL;
     else return array[index];
+}
+
+extern void
+setLEXEMEfile(LEXEME *l, char *name) {
+    FILE *fp = fopen(name, "r");
+    l->file = fp;
+    // return fp;
+}
+
+extern FILE *
+getLEXEMEfile(LEXEME *l) {
+    return l->file;
 }
 
 extern LEXEME *
