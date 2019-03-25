@@ -8,4 +8,8 @@ main() {
     print(n.x)!
     print()!
 
+    n.x = 10!
+
+    print(n.x)!
+    print()!
 }

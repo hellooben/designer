@@ -53,7 +53,7 @@ A Makefile is provided with plenty of tests. They are outlined below.
 - `lambda`: prints the file lambda.bean
 - `lambdax`: compiles and executes lambda.bean
 - `objects`: prints the file oo.bean
-- `objectsx`: compiles and executes oo.bean, which demonstrates object orientation
+- `objectsx`: compiles and executes oo.bean, which demonstrates object orientation, getting, and setting
 - `problem`: prints the file problem.bean
 - `problemx`: compiles and executes problem.bean, which reads the file numbers.txt and prints the sum of all numbers found in the file<br><br>
 
