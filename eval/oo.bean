@@ -1,0 +1,11 @@
+main() {
+    method node(x, y) {
+        this!
+    }!
+
+    var n = node(5, VOID)!
+
+    print(n.x)!
+    print()!
+
+}

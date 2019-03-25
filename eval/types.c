@@ -100,3 +100,4 @@ char *ENV = "ENV";
 char *TABLE = "TABLE";
 char *VALUES = "VALUES";
 char *FP = "FILEPOINTER";
+char *THIS = "THIS";

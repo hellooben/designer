@@ -50,7 +50,7 @@ eval(LEXEME *tree, LEXEME *env) {
     // else if (getType(tree) == AND) return evalShortCircuitOp(tree, env);
     // else if (getType(tree) == OR) return evalShortCircuitOp(tree, env);
     //dor operator evals lhs, rhs as a variable
-    // else if (getType(tree) == DOT) return evalDot(tree, env);
+    else if (getType(tree) == DOT) return evalDot(tree, env);
     //assign operator evals rhs for sure;
     //lhs is a variable or a dot operation
     else if (getType(tree) == ASSIGN) return evalAssign(tree, env); //done
@@ -383,7 +383,7 @@ evalFuncCall(LEXEME *tree, LEXEME *env) {
         // display(xenv);
         // printf("\n");
         // //insert a variable that points to xenv
-        // insert(newLEXEMEString(VARIABLE, "this"), xenv, xenv);
+        insert(newLEXEMEString(VARIABLE, "this"), xenv, xenv);
 
         LEXEME *res = eval(body, xenv);
         // printf("RES: %s\n", getType(res));
@@ -1304,12 +1304,12 @@ evalDivideEquals(LEXEME *tree, LEXEME *env) {
 //
 // }
 
-// extern LEXEME *
-// evalDot(LEXEME *tree, LEXEME *env) {
-//     if (cdr(tree) == NULL) {
-//         printf("INVALID DOT OPERATOR EXPRESSION\nFatal on line %d\n", getLEXEMEline(cdr(tree)));
-//         exit(1);
-//     }
-//     LEXEME *object = eval(car(tree), env); //variable, evals to an object
-//     return eval(cdr(tree), object);
-// }
+extern LEXEME *
+evalDot(LEXEME *tree, LEXEME *env) {
+    if (cdr(tree) == NULL) {
+        printf("INVALID DOT OPERATOR EXPRESSION\nFatal on line %d\n", getLEXEMEline(cdr(tree)));
+        exit(1);
+    }
+    LEXEME *object = eval(car(tree), env); //variable, evals to an object
+    return eval(cdr(tree), object);
+}

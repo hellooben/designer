@@ -377,6 +377,7 @@ unary() {
     else if (check(REAL)) u = match(REAL);
     else if (check(VOID)) u = match(VOID);
     else if (check(LAMBDA)) u = lambda();
+    else if (check(THIS)) u = match(THIS);
     // else if (check(VARIABLE)) u = match(VARIABLE);
     else u = NULL;
     return cons(UNARY, u, NULL);
@@ -641,7 +642,7 @@ expressionPending() {
 
 extern int
 unaryPending() {
-    return check(INTEGER) || check(STRING) || check(REAL) || check(VOID) || check(LAMBDA);
+    return check(INTEGER) || check(STRING) || check(REAL) || check(VOID) || check(LAMBDA) || check(THIS);
 }
 
 extern int

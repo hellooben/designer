@@ -100,5 +100,6 @@ extern char *ENV;
 extern char *TABLE;
 extern char *VALUES;
 extern char *FP;
+extern char *THIS;
 
 #endif

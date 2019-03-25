@@ -17,7 +17,7 @@ extern LEXEME *eval(LEXEME *, LEXEME *);
 
 // extern LEXEME *evalSimpleOp(LEXEME *, LEXEME *);
 // extern LEXEME *evalShortCircuitOp(LEXEME *, LEXEME *);
-// extern LEXEME *evalDot(LEXEME *, LEXEME *);
+extern LEXEME *evalDot(LEXEME *, LEXEME *);
 extern LEXEME *evalAssign(LEXEME *, LEXEME *);
 extern LEXEME *evalVarDef(LEXEME *, LEXEME *);
 extern LEXEME *evalFuncDef(LEXEME *, LEXEME *);
