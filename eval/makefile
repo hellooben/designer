@@ -88,12 +88,10 @@ lambda : print #works
 lambdax : bean #works
 	./bean lambda.bean
 
-objects : print
-	# @echo Objects are not implemented
+objects : print #works
 	./pp oo.bean
 
-objectsx : bean
-	# @echo Objects are not implemented
+objectsx : bean #works
 	./bean oo.bean
 
 problem : print #works
